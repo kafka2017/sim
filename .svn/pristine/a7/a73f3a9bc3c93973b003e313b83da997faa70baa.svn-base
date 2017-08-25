@@ -1,0 +1,18 @@
+package com.amwell.service.recv.impl;
+
+import org.springframework.stereotype.Service;
+
+import com.amwell.model.simrecv.SimRecvResult;
+import com.amwell.service.recv.RecvSimMessageService;
+import com.amwell.util.ResultJson;
+
+@Service
+public class RecvSimMessageServiceImpl implements RecvSimMessageService{
+
+	@Override
+	public ResultJson<Integer> addSimRecvResult(SimRecvResult model) {
+		// TODO 自动生成的方法存根
+		return null;
+	}
+
+}

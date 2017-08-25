@@ -1,0 +1,267 @@
+package com.amwell.model.simbaseInfo;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.Transient;
+
+import org.springframework.util.StringUtils;
+
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.constraint.NotNull;
+
+@Entity
+@Table(name="sim_base_info")
+public class SimBaseInfo {
+
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;//id
+	
+	@NotNull(message="MSISDN号不能为空")
+	@NotEmpty(message="MSISDN号不能为空")
+	@Column(name="msisdn",length=50)
+	private String msisdn;//MSISDN号
+	
+	@NotNull(message="iccid号不能为空")
+	@NotEmpty(message="iccid号不能为空")
+	@Column(name="iccid",length=50)
+	private String iccid;//ICCID
+	
+	@Column(name="serviceStartDate")
+	@Temporal(TemporalType.TIMESTAMP)
+	private String serviceStartDate;//服务开始时间
+	
+	@Column(name="serviceEndDate")
+	@Temporal(TemporalType.TIMESTAMP)
+	private String serviceEndDate;//服务结束时间
+	
+	@Column(name="registTime")
+	@Temporal(TemporalType.TIMESTAMP)
+	private String registTime;//注册时间
+	
+	@Column(name="distributeTime")
+	private String distributeTime;//SIM卡分发时间
+	
+	@Column(name="activationTime")
+	@Temporal(TemporalType.TIMESTAMP)
+	private String activationTime;//激活时间
+	
+	@Column(name="flowCycle")
+	private Integer flowCycle;//套餐周期(单位：月)
+	
+	@Column(name="totalFlow")
+	private Double totalFlow;//总流量(单位M)
+	
+	@Column(name="usedFlow")
+	private Double usedFlow;//已使用流量(单位M)
+	
+	@Column(name="gprsStatus")
+	private String gprsStatus;//gprs状态 00：离线，01:在线，      02:未知
+	
+	@Column(name="deviceStatus")
+	private String deviceStatus;//设备状态 0：关机 1：开机  2：未知
+	
+	@Column(name="cardState")
+	private String cardState;//卡状态 当(00：正常（移动卡：已激活） 01： 未知 02： 停机 03:销号 07：待激活  Activated:已激活(联通卡))
+	
+	@Column(name="createTime")
+	private String createTime;//数据创建时间
+	
+	@Column(name="lastUpdateTime")
+	private String lastUpdateTime;//数据最后更新时间
+	
+	@Column(name="companyId")
+	private Integer companyId;//公司ID
+	
+	@Column(name="remark")
+	private String remark;//备注
+	
+	@Column(name="version")
+	private Long version=1L;//版本号，每次修改后，此版本号加1
+	
+	@Transient
+	private String fullName;
+	
+	@Transient
+	private String shortName;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getMsisdn() {
+		return msisdn;
+	}
+
+	public void setMsisdn(String msisdn) {
+		this.msisdn = msisdn;
+	}
+
+	public String getIccid() {
+		return iccid;
+	}
+
+	public void setIccid(String iccid) {
+		this.iccid = iccid;
+	}
+
+
+	public String getServiceStartDate() {
+		return serviceStartDate;
+	}
+
+	public void setServiceStartDate(String serviceStartDate) {
+		this.serviceStartDate = serviceStartDate;
+	}
+
+
+	public String getServiceEndDate() {
+		return serviceEndDate;
+	}
+
+	public void setServiceEndDate(String serviceEndDate) {
+		this.serviceEndDate = serviceEndDate;
+	}
+
+	public String getRegistTime() {
+		return registTime;
+	}
+
+	public void setRegistTime(String registTime) {
+		this.registTime = registTime;
+	}
+
+	public String getDistributeTime() {
+		return distributeTime;
+	}
+
+	public void setDistributeTime(String distributeTime) {
+		this.distributeTime = distributeTime;
+	}
+
+	public String getActivationTime() {
+		return activationTime;
+	}
+
+	public void setActivationTime(String activationTime) {
+		this.activationTime = activationTime;
+	}
+
+	public Integer getFlowCycle() {
+		return flowCycle;
+	}
+
+	public void setFlowCycle(Integer flowCycle) {
+		this.flowCycle = flowCycle;
+	}
+
+	public Double getTotalFlow() {
+		return totalFlow;
+	}
+
+	public void setTotalFlow(Double totalFlow) {
+		this.totalFlow = totalFlow;
+	}
+
+	public Double getUsedFlow() {
+		return usedFlow;
+	}
+
+	public void setUsedFlow(Double usedFlow) {
+		this.usedFlow = usedFlow;
+	}
+
+	public String getGprsStatus() {
+		return gprsStatus;
+	}
+
+	public void setGprsStatus(String gprsStatus) {
+		this.gprsStatus = gprsStatus;
+	}
+
+	public String getDeviceStatus() {
+		return deviceStatus;
+	}
+
+	public void setDeviceStatus(String deviceStatus) {
+		this.deviceStatus = deviceStatus;
+	}
+
+	public String getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(String createTime) {
+		this.createTime = createTime;
+	}
+
+	public String getLastUpdateTime() {
+		return lastUpdateTime;
+	}
+
+	public void setLastUpdateTime(String lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
+	}
+
+	public Integer getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Integer companyId) {
+		this.companyId = companyId;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+
+	public String getCardState() {
+		return cardState;
+	}
+
+	public void setCardState(String cardState) {
+		if(StringUtils.hasText(cardState)&&"Activated".equals(cardState)){
+			cardState="00";
+		}
+		this.cardState = cardState;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
+	}
+	
+}

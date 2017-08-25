@@ -1,0 +1,8 @@
+package com.amwell.service.simwaringset;
+
+import com.amwell.model.simwaringset.SimWaringSet;
+import com.amwell.service.IService;
+
+public interface SimWaringSetService extends IService<SimWaringSet> {
+
+}

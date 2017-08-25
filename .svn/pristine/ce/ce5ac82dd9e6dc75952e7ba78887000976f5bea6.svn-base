@@ -1,0 +1,39 @@
+//package com.amwell.config;
+//
+//import java.nio.charset.Charset;
+//
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
+//import org.springframework.boot.context.embedded.tomcat.TomcatConnectorCustomizer;
+//import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.Configuration;
+//
+//@Configuration
+//public class TomcatConfig {
+//	
+//	@Value("${server.port}")
+//	private Integer port;
+//
+//	 @Bean
+//    public EmbeddedServletContainerFactory servletContainer() {
+//        TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
+//        tomcat.setUriEncoding(Charset.forName("UTF-8"));
+//        //tomcat.addAdditionalTomcatConnectors(connectors());
+//        //tomcat.addConnectorCustomizers(tomcatConnectorCustomizers());
+//        tomcat.setPort(port);
+//        
+//        return tomcat;
+//    }
+//	 
+////	private Connector connectors(){
+////		Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
+////		connector.setPort(port);
+////		return null;
+////	}
+//	
+//	private TomcatConnectorCustomizer tomcatConnectorCustomizers(){
+//		return null;
+//	}
+//	 
+//}

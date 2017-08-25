@@ -1,0 +1,87 @@
+package com.amwell.simbaseinfo;
+
+import java.util.Date;
+import java.util.List;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.amwell.model.simbaseInfo.SimBaseInfo;
+import com.amwell.model.simbaseInfo.SimBaseInfoQuery;
+import com.amwell.service.simbaseInfo.SimBaseInfoService;
+import com.amwell.test.SpringBaseTestCase;
+import com.amwell.util.JSONHelper;
+import com.amwell.util.ResultJson;
+import com.github.pagehelper.PageInfo;
+
+public class SimBaseInfoServiceTest extends SpringBaseTestCase {
+
+	@Autowired
+	private SimBaseInfoService simbaseInfoService;
+	
+	@Test
+	public void q(){
+		List<SimBaseInfo> l = simbaseInfoService.queryAll();
+		for(SimBaseInfo sb:l){
+			System.err.println("id:"+sb.getId());
+		}
+		//System.out.println(JSONHelper.toString(l));
+	}
+	
+	@Test
+	public void add(){
+		SimBaseInfo model = new SimBaseInfo();
+		model.setMsisdn("ACD1002120");
+		model.setIccid("AC12201211");
+		model.setServiceStartDate("2017-07-21");
+		model.setServiceEndDate("2017-07-20");
+		model.setRegistTime("2017-07-22");
+		model.setDistributeTime("2017-07-23");
+		model.setActivationTime("2017-07-24");
+		model.setFlowCycle(1);
+		model.setTotalFlow(2D);
+		model.setUsedFlow(3D);
+		model.setGprsStatus("2");
+		model.setDeviceStatus("5");
+		model.setCompanyId(1);
+		model.setRemark("说明");
+		model.setVersion(1L);
+		ResultJson<Integer> i = simbaseInfoService.addSimBaseInfo(model);
+		System.err.println(JSONHelper.toString(i));
+	}
+	
+	@Test
+	public void upd(){
+		
+		SimBaseInfo model = new SimBaseInfo();
+		model.setMsisdn("BCCD1002120");
+		model.setIccid("BCC12201211");
+		model.setServiceStartDate("2016-07-21");
+		model.setServiceEndDate("2016-07-20");
+		model.setRegistTime("2016-07-22");
+		model.setDistributeTime("2016-07-23");
+		model.setActivationTime("2016-07-24");
+		model.setFlowCycle(2);
+		model.setTotalFlow(2D);
+		model.setUsedFlow(3D);
+		model.setGprsStatus("2");
+		model.setDeviceStatus("5");
+		model.setCompanyId(1);
+		model.setRemark("说明");
+		model.setVersion(3L);
+		
+		model.setId(3L);
+		ResultJson<Integer> rs = simbaseInfoService.updSimBaseInfo(model);
+		System.err.println(JSONHelper.toString(rs));
+	} 
+	
+	@Test
+	public void qpage(){
+		SimBaseInfoQuery query = new SimBaseInfoQuery();
+		query.setStart(1);
+		query.setLength(5);
+		PageInfo<SimBaseInfo> l = simbaseInfoService.querySimBaseInfoByPage(query);
+		
+		System.err.println(JSONHelper.toString(l));
+	}
+}

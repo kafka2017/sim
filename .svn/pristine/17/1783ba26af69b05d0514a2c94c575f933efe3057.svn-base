@@ -1,0 +1,9 @@
+package com.amwell.ecar.service;
+
+import com.amwell.ecar.vo.base.ECarCommonResult;
+import com.amwell.ecar.vo.query.ECarCommonQuery;
+
+public interface ECarInterfaceService {
+
+	public ECarCommonResult getSimBaseInfo(ECarCommonQuery query );
+}

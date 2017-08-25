@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amwell.mapper.UserMapper">
+  <resultMap id="BaseResultMap" type="com.amwell.model.User">
+    
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="username" jdbcType="VARCHAR" property="username" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="simcompanyId" jdbcType="INTEGER" property="simcompanyId" />
+    <result column="enable" jdbcType="INTEGER" property="enable" />
+  </resultMap>
+  
+  <select id="isExisten"  resultType="Integer">
+  		select COUNT(1) from `user`
+  		<where>
+	  		<choose>
+	  			<when test="col == 'username'">
+	  				and username = #{val}
+	  			</when>
+	  			<otherwise>
+	  				and 1=2
+	  			</otherwise>
+	  		</choose>
+	  		<if test="id != null">
+	  			and id != #{id}
+	  		</if>
+  		</where>
+  </select>
+  
+  <select id="queryUser" parameterType="int" resultType="User">
+  		select a.*,b.shortName,b.fullName from `user` a left join sim_company b on a.simcompanyid = b.id
+  		where a.id = #{id}
+  </select>
+  
+  <update id="updateUserPassword" parameterType="User">
+  		update user set password=#{password} where id=#{id}
+  </update>
+  
+  <select id="selectByUsername" resultType="User">
+  		select * from user where username=#{username} and enable=1
+  </select>
+</mapper>

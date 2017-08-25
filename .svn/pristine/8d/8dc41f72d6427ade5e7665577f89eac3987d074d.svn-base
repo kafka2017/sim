@@ -1,0 +1,40 @@
+package com.amwell.controller.recv;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.amwell.model.User;
+import com.amwell.model.simrecv.SimRecvResult;
+import com.amwell.model.simrecv.SimRecvResultQuery;
+import com.amwell.service.recv.RecvSimMessageService;
+import com.amwell.util.ResultJson;
+import com.amwell.util.StatusCode;
+import com.github.pagehelper.PageInfo;
+
+@RestController
+@RequestMapping("/recv")
+public class RecvController {
+
+	
+	@Autowired
+	RecvSimMessageService recvSimMessageService;
+	
+	/**
+	 * 分页查询
+	 * @return
+	 */
+	@RequestMapping(value="/queryByPage")
+	public ResultJson<PageInfo<SimRecvResult>> queryByPage(SimRecvResultQuery query){
+		Session session = SecurityUtils.getSubject().getSession();
+		User user = (User)session.getAttribute("userSession");
+		if(user==null){
+			return ResultJson.buildFailedMsg(StatusCode.LOGIN_OUT, "登录超时");
+		}
+		PageInfo<SimRecvResult> pi = recvSimMessageService.queryByPage(query);
+		
+		return ResultJson.buildSuccessMsg(pi, StatusCode.SUCCESS, "查询成功");
+	}
+}

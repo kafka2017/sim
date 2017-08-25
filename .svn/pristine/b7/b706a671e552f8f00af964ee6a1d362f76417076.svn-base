@@ -1,0 +1,83 @@
+package com.amwell.service.impl.report;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amwell.config.AmwellSetConfig;
+import com.amwell.mapper.report.SimCompanyReportMapper;
+import com.amwell.mapper.simsendrecord.SimSendRecordMapper;
+import com.amwell.mapper.simwaringset.SimMessageMapper;
+import com.amwell.model.report.SimWaring;
+import com.amwell.model.simcompany.SimCompanyQuery;
+import com.amwell.model.simcompany.SimCompanyReport;
+import com.amwell.model.simsendrecord.SimSendRecordCount;
+import com.amwell.model.simsendrecord.SimSendRecordQuery;
+import com.amwell.model.simwaringset.SimMessageSet;
+import com.amwell.service.report.ReportService;
+
+@Service(value="reportService")
+public class ReportServiceImpl  implements ReportService {
+
+	@Resource
+	private SimCompanyReportMapper simcompanyReportMapper;
+	
+	@Resource
+	private SimSendRecordMapper simsendRecordMapper;
+	
+	@Resource
+	private SimMessageMapper messageMapper;
+	
+	@Autowired
+	private AmwellSetConfig aset;
+
+	@Override
+	public List<SimCompanyReport> simStatusReport(SimCompanyQuery query) {
+		return simcompanyReportMapper.simStatusReport(query);
+	}
+
+	@Override
+	public List<SimWaring> simWaringReport(SimCompanyQuery query) {
+		query.setSetVal(aset.getFlow());
+		return simcompanyReportMapper.simWaringReport(query);
+	}
+
+	@Override
+	public SimSendRecordCount simMessageRecord(SimSendRecordQuery query) {
+		query.setPageNum(null);
+		query.setPageSize(null);
+		List<SimSendRecordCount> l = simsendRecordMapper.queryMessageByCompany(query);
+		
+		if(l!=null && l.size()>0){
+			
+			SimSendRecordCount simsendrecord = l.get(0);
+			
+			//获取公司设置的短信阈值
+			SimMessageSet record = new SimMessageSet();
+			if(query.getCompanyId()!=null){
+				record.setCompanyId(query.getCompanyId());
+			}
+			SimMessageSet message = messageMapper.selectOne(record);
+			
+			//计算短信总数和超出数
+			Integer messageTotal = aset.getMessageTotal();//系统默认值
+			if(message!=null){
+				messageTotal = message.getMessageTotal();//配置的值
+			}
+			
+			//超出短信发送计算
+			Integer messageExceed = messageTotal - simsendrecord.getMessageCount()>0?0:Math.abs(messageTotal - simsendrecord.getMessageCount());
+			
+			simsendrecord.setMessageTotal(messageTotal);
+			simsendrecord.setMessageExceed(messageExceed);
+			
+			return simsendrecord;
+		}
+		
+		return null;
+	}
+
+}

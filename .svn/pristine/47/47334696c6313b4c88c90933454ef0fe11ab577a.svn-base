@@ -1,0 +1,69 @@
+package com.amwell.service.simbaseInfo;
+
+import java.util.List;
+
+import org.springframework.transaction.annotation.Transactional;
+
+import com.amwell.model.simbaseInfo.SimBaseInfo;
+import com.amwell.model.simbaseInfo.SimBaseInfoQuery;
+import com.amwell.service.IService;
+import com.amwell.util.ResultJson;
+import com.github.pagehelper.PageInfo;
+
+/**
+ * SIM卡基本信息
+ * @author 番茄很忙
+ *
+ */
+public interface SimBaseInfoService extends IService<SimBaseInfo> {
+
+	/**
+	 * 查询所有
+	 * @return
+	 */
+	public List<SimBaseInfo> queryAll();
+	
+	/**
+	 * 分页查询
+	 * @return
+	 */
+	public PageInfo<SimBaseInfo> querySimBaseInfoByPage(SimBaseInfoQuery query);
+	
+	/**
+	 * 不分页查询
+	 * @param query
+	 * @return
+	 */
+	public List<SimBaseInfo> querySimBaseInfo(SimBaseInfoQuery query);
+	
+	/**
+	 * 添加sim卡
+	 * @param model
+	 * @return
+	 */
+	@Transactional
+	public ResultJson<Integer> addSimBaseInfo(SimBaseInfo model);
+	
+	/**
+	 * 更新sim卡
+	 * @param model
+	 * @return
+	 */
+	@Transactional
+	public ResultJson<Integer> updSimBaseInfo(SimBaseInfo model);
+	
+	/**
+	 * 查询单条
+	 * @param id
+	 * @return
+	 */
+	public SimBaseInfo querySimBaseInfoById(Long id);
+	
+	/**
+	 * 为公司分配SIM卡
+	 * @return
+	 */
+	public ResultJson<SimBaseInfo> allocationSimCar(List<Long> ids,Integer companyId);
+	
+	
+}

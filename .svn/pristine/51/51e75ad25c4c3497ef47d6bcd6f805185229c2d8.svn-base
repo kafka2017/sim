@@ -1,0 +1,31 @@
+package com.amwell.ecar.service.impl;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import com.amwell.ecar.service.ECarInterfaceService;
+import com.amwell.ecar.vo.base.ECarCommonResult;
+import com.amwell.ecar.vo.query.ECarCommonQuery;
+
+@Service
+public class ECarInterfaceServiceImpl implements ECarInterfaceService {
+
+    private static final String SERVER_PORT="http://eoc.e-car.cn:7070/";
+    
+    private static final String URL_REQ_SIM=SERVER_PORT+"service/pflow/simInfo/cardInfo";
+    
+	@Autowired
+	private RestTemplate restTemplate;
+
+	@Override
+	public ECarCommonResult getSimBaseInfo(ECarCommonQuery query) {
+		ResponseEntity<ECarCommonResult> result= restTemplate.postForEntity(URL_REQ_SIM, query, ECarCommonResult.class);
+		if(null!=result){
+			return result.getBody();
+		}
+		return null;
+	}
+
+}

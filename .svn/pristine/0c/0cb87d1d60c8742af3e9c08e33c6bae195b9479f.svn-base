@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amwell.mapper.simwaringset.SimWaringSetMapper">
+
+    <resultMap id="BaseResultMap" type="com.amwell.model.simwaringset.SimWaringSet">
+	    <id column="id" jdbcType="INTEGER" property="id" />
+	    <id column="companyId" jdbcType="INTEGER" property="companyId" />
+	    <id column="setVal" jdbcType="DOUBLE" property="setVal" />
+  </resultMap>
+  
+</mapper>

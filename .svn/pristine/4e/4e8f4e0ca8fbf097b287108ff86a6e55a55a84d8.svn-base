@@ -1,0 +1,10 @@
+package com.amwell.service.recv.impl;
+
+import org.springframework.stereotype.Service;
+
+import com.amwell.service.recv.RecvSimMessageService;
+
+@Service
+public class RecvSimMessageServiceImpl implements RecvSimMessageService{
+
+}

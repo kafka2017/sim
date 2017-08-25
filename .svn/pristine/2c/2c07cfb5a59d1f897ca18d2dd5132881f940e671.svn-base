@@ -1,0 +1,66 @@
+package com.amwell.ecar.service;
+
+import com.amwell.ecar.vo.result.ECarDeviceStatusWrapperResult;
+import com.amwell.ecar.vo.result.ECarGprsStatusWrapperResult;
+import com.amwell.ecar.vo.result.ECarSIMListWrapperResult;
+import com.amwell.ecar.vo.result.ECarSendListWrapperResult;
+import com.amwell.ecar.vo.result.ECarSendMsgWrapperResult;
+import com.amwell.ecar.vo.result.ECarSimWrapperResult;
+
+public interface ECarInterfaceService {
+
+	/**
+	 * 查询SIM卡信息
+	 * @param iccid
+	 * @return ECarSimWrapperResult
+	 */
+	public ECarSimWrapperResult getSimBaseInfo(String iccid);
+	
+
+	/**
+	 * 批量查询SIM卡信息,不包含SIM卡实时状态信息，实时状态信息需要getSimBaseInfo(String iccid)查询
+	 * @param iccid
+	 * @param status SIM卡状态
+	 * @param startDate 分发起始时间
+	 * @param endDate   分发结束时间
+	 * @param currPage  当前页数
+	 * @param pageSize  每页大小
+	 * @return
+	 */
+	public ECarSIMListWrapperResult batchQuerySimBaseInfo(String iccid,String status,String startDate,String endDate,int currPage,int pageSize);
+	
+	/**
+	 * 查询SIM卡设备状态
+	 * @param iccid
+	 * @return ECarDeviceStatusWrapperResult
+	 */
+	public ECarDeviceStatusWrapperResult getDeviceStatusInfo(String iccid);
+
+
+	/**
+	 * 查询SIM卡GPRS状态
+	 * @param iccid
+	 * @return ECarGprsStatusWrapperResult
+	 */
+	public ECarGprsStatusWrapperResult getGprsStatusInfo(String iccid);
+	
+	/**
+	 * 发送短信
+	 * @param mobile 手机号码
+	 * @param content 内容
+	 * @return 新增编号数组
+	 */
+	public ECarSendMsgWrapperResult sendMsg(String mobile,String content);
+	
+	/**
+	 * 查询短信发送记录
+	 * @param iccid
+	 * @param mobile
+	 * @param startDate
+	 * @param endDate
+	 * @param currPage
+	 * @param pageSize
+	 * @return
+	 */
+	public ECarSendListWrapperResult querySendList(String iccid,String mobile,String startDate,String endDate,Integer currPage,Integer pageSize); 
+}

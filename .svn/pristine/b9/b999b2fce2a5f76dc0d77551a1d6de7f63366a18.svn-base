@@ -1,0 +1,13 @@
+package com.amwell.service.simwaringset;
+
+import com.amwell.model.simwaringset.SimWaringSet;
+import com.amwell.service.IService;
+
+/**
+ * 流量阈值设置接口
+ * @author 番茄很忙
+ *
+ */
+public interface SimWaringSetService extends IService<SimWaringSet> {
+
+}

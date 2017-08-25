@@ -1,0 +1,6 @@
+package com.amwell.service.recv;
+
+public interface RecvSimMessageService {
+
+	
+}

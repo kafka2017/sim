@@ -1,0 +1,11 @@
+#host=120.24.154.137
+#host=192.168.6.88
+#wai wang ce shi 
+host=120.24.153.199
+port=39570
+username=ftpadmin
+password=Dec_ftp@pig,84&*();
+#httpRootUrl=http\://ftp.zuchezaixian.com
+#httpRootUrl=http\://192.168.6.88\:39571
+#wai wang ce shi 
+httpRootUrl=http\://120.24.153.199\:39571

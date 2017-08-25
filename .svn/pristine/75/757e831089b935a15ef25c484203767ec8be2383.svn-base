@@ -1,0 +1,28 @@
+package com.amwell.controller.recv;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.amwell.model.simrecv.SimRecvResult;
+import com.amwell.model.simrecv.SimRecvResultQuery;
+import com.amwell.service.recv.RecvSimMessageService;
+import com.github.pagehelper.PageInfo;
+
+@RestController
+@RequestMapping("/recv")
+public class RecvController {
+
+	
+	@Autowired
+	RecvSimMessageService recvSimMessageService;
+	
+	/**
+	 * 分页查询
+	 * @return
+	 */
+	@RequestMapping(value="/queryByPage")
+	public PageInfo<SimRecvResult> queryByPage(SimRecvResultQuery query){
+		return recvSimMessageService.queryByPage(query);
+	}
+}

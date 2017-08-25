@@ -1,0 +1,12 @@
+package com.amwell.mapper.simcompany;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.amwell.model.simcompany.SimCompany;
+import com.amwell.util.MyMapper;
+
+public interface SimCompanyMapper extends MyMapper<SimCompany>{
+
+	//是否存在
+	public Integer isExisten(@Param("col") String col,@Param("val") String val,@Param("id") Integer id);
+}

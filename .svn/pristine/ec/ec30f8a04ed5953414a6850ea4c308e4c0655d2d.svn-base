@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amwell.mapper.simsendrecord.SimSendRecordMapper">
+  <resultMap id="BaseResultMap" type="com.amwell.model.simsendrecord.SimSendRecord">
+	    <id column="id" jdbcType="BIGINT" property="id" />
+	    <result column="iccid" jdbcType="VARCHAR" property="iccid" />
+	    <result column="msisdn" jdbcType="VARCHAR" property="msisdn" />
+	    <result column="content" jdbcType="VARCHAR" property="content" />
+	    <result column="createBy" jdbcType="INTEGER" property="createBy" />
+	    <result column="createOn" jdbcType="DATE" property="createOn" />
+	    <result column="sendNum" jdbcType="BIGINT" property="sendNum" />
+	    <result column="sendStatus" jdbcType="INTEGER" property="sendStatus" />
+  </resultMap>
+  
+  <select id="queryMessageByCompany" resultType="com.amwell.model.simsendrecord.SimSendRecordCount" parameterType="com.amwell.model.simsendrecord.SimSendRecordQuery">
+	  	  SELECT 
+			d.shortName,c.companyId,
+			count(1) as messageCount 
+		from sim_send_record a 
+		left join `user` b on a.createBy = b.id
+		left join sim_base_info c on a.iccid = c.iccid
+		left join sim_company d on c.companyId = d.id
+		where 1=1 and c.companyId = #{companyId}
+			and YEAR(a.createOn) = YEAR(NOW())
+			and a.sendStatus = 1
+		GROUP BY d.shortName
+  </select>
+  
+  <select id="querySimSendRecord" parameterType="com.amwell.model.simsendrecord.SimSendRecordQuery" resultType="com.amwell.model.simsendrecord.SimSendRecord">
+  		SELECT 
+			a.id,a.iccid,a.content,date_format(a.createOn,'%Y-%m-%d %H:%i')as createOn,a.sendNum,a.sendStatus 
+		from sim_send_record a 
+		left join `user` b on a.createBy = b.id
+		left join sim_base_info c on a.iccid = c.iccid
+		left join sim_company d on c.companyId = d.id
+		<where>
+			<if test="companyId!=null">
+				and d.id = #{companyId}
+			</if>
+			<if test="iccid!=null">
+				and a.iccid = #{iccid}
+			</if>
+			<if test="msisdn!=null">
+				and a.msisdn = #{msisdn}
+			</if>
+		</where>
+		order by a.createOn desc
+  </select>
+  
+  <select id="queryByiccid" parameterType="com.amwell.model.simsendrecord.SimSendRecordQuery" resultType="com.amwell.model.simsendrecord.SimSendRecordIccidCount">
+  		SELECT 
+			a.iccid,count(1) as msgCount 
+		from sim_send_record a
+		where 1=1 
+		and sendStatus = 1  
+		<if test="iccid!=null and iccid!=''">
+			and a.iccid = #{iccid}
+		</if>
+		<if test="msisdn!=null and msisdn!=''">
+			and a.msisdn = #{msisdn}
+		</if>
+		GROUP BY a.iccid
+  </select>
+
+</mapper>

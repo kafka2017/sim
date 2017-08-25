@@ -1,0 +1,100 @@
+package com.amwell.ecar.vo.result;
+
+import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class ECarSimBaseInfo implements Serializable{
+
+	private static final long serialVersionUID = -2832724179217207049L;
+
+	@JsonProperty("MSISDN")
+	private String msisdn;
+
+	@JsonProperty("ICCID")
+	private String iccid;
+
+	@JsonProperty("ServiceStartDate")
+	private String serviceStartDate;
+
+	@JsonProperty("ServiceEndDate")
+	private String serviceEndDate;
+	
+	@JsonProperty("TotalFlow")
+	private String totalFlow;
+
+	@JsonProperty("FlowCycle")
+	private String flowCycle;
+
+	@JsonProperty("CardState")
+	private String cardState;
+
+	@JsonProperty("UsedFlow")
+	private String usedFlow;
+
+	public String getMsisdn() {
+		return msisdn;
+	}
+
+	public void setMsisdn(String msisdn) {
+		this.msisdn = msisdn;
+	}
+
+	public String getIccid() {
+		return iccid;
+	}
+
+	public void setIccid(String iccid) {
+		this.iccid = iccid;
+	}
+
+	public String getServiceStartDate() {
+		return serviceStartDate;
+	}
+
+	public void setServiceStartDate(String serviceStartDate) {
+		this.serviceStartDate = serviceStartDate;
+	}
+
+	public String getServiceEndDate() {
+		return serviceEndDate;
+	}
+
+	public void setServiceEndDate(String serviceEndDate) {
+		this.serviceEndDate = serviceEndDate;
+	}
+
+	public String getTotalFlow() {
+		return totalFlow;
+	}
+
+	public void setTotalFlow(String totalFlow) {
+		this.totalFlow = totalFlow;
+	}
+
+	public String getFlowCycle() {
+		return flowCycle;
+	}
+
+	public void setFlowCycle(String flowCycle) {
+		this.flowCycle = flowCycle;
+	}
+
+	public String getCardState() {
+		return cardState;
+	}
+
+	public void setCardState(String cardState) {
+		this.cardState = cardState;
+	}
+
+	public String getUsedFlow() {
+		return usedFlow;
+	}
+
+	public void setUsedFlow(String usedFlow) {
+		this.usedFlow = usedFlow;
+	}
+
+	
+}

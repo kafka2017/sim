@@ -1,0 +1,18 @@
+package com.amwell.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+
+//@Configuration
+public class FileUploadConfiguration {
+
+//	@Bean(name="multipartResolver")
+//    public CommonsMultipartResolver multipartConfigElement() {
+//		CommonsMultipartResolver factory = new CommonsMultipartResolver();
+//        factory.setDefaultEncoding("utf-8");
+//        factory.setMaxUploadSize(5242880);
+//        factory.setResolveLazily(true);
+//        return factory;
+//    }
+}

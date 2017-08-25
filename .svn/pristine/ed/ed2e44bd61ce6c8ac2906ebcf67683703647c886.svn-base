@@ -1,0 +1,248 @@
+package com.amwell.service.impl.simcompany;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.annotation.Resource;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amwell.config.AmwellSetConfig;
+import com.amwell.mapper.UserMapper;
+import com.amwell.mapper.report.SimCompanyReportMapper;
+import com.amwell.mapper.simcompany.SimCompanyMapper;
+import com.amwell.mapper.simwaringset.SimWaringSetMapper;
+import com.amwell.model.User;
+import com.amwell.model.simcompany.SimCompany;
+import com.amwell.model.simcompany.SimCompanyQuery;
+import com.amwell.model.simcompany.SimCompanyReport;
+import com.amwell.model.simwaringset.SimWaringSet;
+import com.amwell.service.impl.BaseService;
+import com.amwell.service.simcompany.SimCompanyService;
+import com.amwell.util.JSONUtil;
+import com.amwell.util.PasswordHelper;
+import com.amwell.util.ResultJson;
+import com.amwell.util.StatusCode;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
+import net.sf.oval.ConstraintViolation;
+import net.sf.oval.Validator;
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Service(value="simcompanyService")
+public class SimCompanyServiceImpl extends BaseService<SimCompany> implements SimCompanyService {
+
+	@Resource
+	SimCompanyMapper simCompanyMapper;
+	
+	@Resource
+	UserMapper userMapper;
+	
+	@Resource
+	SimWaringSetMapper simwaringsetmapper;
+	
+	@Resource
+	SimCompanyReportMapper simcompanyReportMapper;
+	
+	@Autowired
+	AmwellSetConfig aset;
+	
+	@Override
+	public PageInfo<SimCompany> querySimCompanyByPage(SimCompanyQuery query) {
+        PageHelper.startPage(query.getPageNum(), query.getPageSize());
+        List<SimCompany> simbaseInfoList = simCompanyMapper.querySimCompany(query);
+        return new PageInfo<>(simbaseInfoList);
+	}
+
+	@Override
+	public Map<String,Object> querySimCompany(SimCompanyQuery query) throws JSONException {
+		query.setPageNum(null);
+		query.setPageSize(null);
+		List<SimCompany> l = simCompanyMapper.querySimCompany(query);
+		JSONArray tree = new JSONArray();
+		//迭代所有的权限集合
+		for(int i=0;i<l.size();i++){
+			//取出这个对象
+			SimCompany simcompany = l.get(i);
+			JSONObject one = new JSONObject();
+			one.put("id", simcompany.getId());//设置权限ID
+			one.put("pId", simcompany.getParentId());//设置父权限ID
+			one.put("name", simcompany.getShortName());//设置权限的名称
+			one.put("open", "false");//设置菜单出事话是否展开
+			tree.put(one);
+		}
+		Map<String,Object> map = new HashMap<String,Object>();
+		map.put("tree", JSONUtil.toJSONString(tree));
+		//map.put("tree", l);
+		return map;
+	}
+
+	@Override
+	public ResultJson<Integer> addSimCompany(SimCompany model) {
+		
+		if(model==null){
+			return ResultJson.buildFailedMsg(StatusCode.SIMCOMPANY_NULL, "SimCompany为空，添加分公司账户失败");
+		}
+		model.setCreateTime(new Date());
+		model.setLastUpdateTime(new Date());
+		model.setVersion(1L);
+		//验证
+		Validator validator = new Validator(); 
+	    List<ConstraintViolation> ret = validator.validate(model);
+		if(!ret.isEmpty()){
+			return ResultJson.buildFailedMsg(0, ret.get(0).getMessage());
+		}
+		
+		Integer ucount = userMapper.isExisten("username", model.getUsername(), null);
+		if(ucount>0){
+			return ResultJson.buildFailedMsg(StatusCode.SIMCOMPANY_FULLNAME_NULL, "登录账户已存在");
+		}
+		
+		Integer fcount = simCompanyMapper.isExisten("fullName", model.getFullName(), null);
+		if(fcount>0){
+			return ResultJson.buildFailedMsg(StatusCode.SIMCOMPANY_FULLNAME_NULL, "公司全称已存在");
+		}
+		
+		Integer scount = simCompanyMapper.isExisten("shortName", model.getShortName(), null);
+		if(scount>0){
+			return ResultJson.buildFailedMsg(StatusCode.SIMCOMPANY_SHORTNAME_NULL, "公司简称已存在");
+		}
+		
+		//添加公司信息和账户信息
+		try {
+			Integer i = super.save(model);
+			
+			User user = new User();
+			user.setUsername(model.getUsername());
+			user.setPassword(model.getPassword());
+			user.setRealname(model.getRealName());
+			user.setSimcompanyId(model.getId());
+			user.setEnable(model.getFlag());
+			//密码加密
+			user.setPassword(PasswordHelper.getEncryptPassword(user.getUsername(),user.getPassword()));
+			userMapper.insert(user);
+			
+			if(i>0){
+				return ResultJson.buildSuccessMsg(null,StatusCode.SUCCESS, "添加成功");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		
+		return ResultJson.buildFailedMsg(StatusCode.EXCEPTION, "添加失败");
+		
+	}
+
+	@Override
+	public ResultJson<Integer> updSimCompany(SimCompany model) {
+		if(model==null){
+			return ResultJson.buildFailedMsg(StatusCode.SIMCOMPANY_NULL, "SimBaseInfo为空，更新失败");
+		}
+		model.setLastUpdateTime(new Date());
+		//model.setVersion(1L);
+		//验证
+		Validator validator = new Validator(); 
+	    List<ConstraintViolation> ret = validator.validate(model);
+		if(!ret.isEmpty()){
+			return ResultJson.buildFailedMsg(0, ret.get(0).getMessage());
+		}
+		
+		Integer fcount = simCompanyMapper.isExisten("fullName", model.getFullName(), model.getId());
+		
+		if(fcount>0){
+			return ResultJson.buildFailedMsg(StatusCode.SIMCOMPANY_FULLNAME_NULL, "公司全称已存在");
+		}
+		
+		Integer scount = simCompanyMapper.isExisten("shortName", model.getShortName(), model.getId());
+		if(scount>0){
+			return ResultJson.buildFailedMsg(StatusCode.SIMCOMPANY_SHORTNAME_NULL, "公司简称已存在");
+		}
+		
+		
+		//更新
+		try {
+			
+			SimCompany sc = super.selectByKey(model.getId());
+			
+			if(sc==null){
+				return ResultJson.buildFailedMsg(StatusCode.SIMCOMPANY_NULL, "无法获取更新数据");
+			}
+			
+			model.setVersion(sc.getVersion());//乐观锁版本控制
+			
+			Integer i = simCompanyMapper.updSimCompanyLock(model);
+			if(i>0){
+				return ResultJson.buildSuccessMsg(null,StatusCode.SUCCESS, "更新成功");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		
+		return ResultJson.buildFailedMsg(0, "更新失败");
+	}
+
+	@Override
+	public SimCompany queryById(Integer id) {
+		if(id==null){
+			return new SimCompany();
+		}
+		return simCompanyMapper.queryById(id);
+	}
+
+	@Override
+	public ResultJson<Integer> delSimCompany(Integer id) {
+		if(id==null){
+			return ResultJson.buildFailedMsg(0, "id不能为空");
+		}
+		try {
+			//删除公司
+			Integer i = super.delete(id);
+			//删除账户
+			Example example = new Example(User.class);
+			Criteria c = example.createCriteria();
+			c.andEqualTo("simcompanyId",id);
+			userMapper.deleteByExample(example);
+			
+			if(i>0){
+				return ResultJson.buildSuccessMsg(null,StatusCode.SUCCESS, "删除成功");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		
+		return ResultJson.buildFailedMsg(StatusCode.EXCEPTION, "删除失败");
+	}
+
+	@Override
+	public List<SimCompanyReport> querySimCompanyReport(SimCompanyQuery query) {
+		
+		Double setval = aset.getFlow();
+		query.setPageNum(null);
+		query.setPageSize(null);
+		//读取公司配置的流量阈值
+		if(query!=null && query.getCompanyId()!=null){
+			SimWaringSet record = new SimWaringSet();
+			record.setCompanyId(query.getCompanyId());
+			SimWaringSet sws = simwaringsetmapper.selectOne(record);
+			if(sws!=null){
+				setval = sws.getSetVal();
+			}
+		}
+		
+		query.setSetVal(setval);
+		return simcompanyReportMapper.querySimpanyReport(query);
+	}
+
+
+}

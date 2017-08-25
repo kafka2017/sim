@@ -1,0 +1,11 @@
+package com.amwell.mapper.simbaseInfo;
+
+import java.util.List;
+
+import com.amwell.model.simbaseInfo.SimBaseInfo;
+import com.amwell.util.MyMapper;
+
+public interface SimBaseInfoMapper extends MyMapper<SimBaseInfo>{
+
+	public List<SimBaseInfo> queryAll();
+}

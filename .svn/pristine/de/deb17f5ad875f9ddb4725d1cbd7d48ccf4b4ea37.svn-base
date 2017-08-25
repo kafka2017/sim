@@ -1,0 +1,60 @@
+package com.amwell.controller.simbaseinfo;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.amwell.model.simbaseInfo.SimBaseInfo;
+import com.amwell.model.simbaseInfo.SimBaseInfoQuery;
+import com.amwell.service.simbaseInfo.SimBaseInfoService;
+import com.amwell.util.ResultJson;
+import com.github.pagehelper.PageInfo;
+
+@RestController
+@RequestMapping("/simBaseInfo")
+public class SimBaseInfoController {
+
+	@Autowired
+	private SimBaseInfoService simbaseInfoService;
+	
+	/**
+	 * 分页查询
+	 * @param query
+	 * @return
+	 */
+	@RequestMapping(value="/queryByPage")
+	public PageInfo<SimBaseInfo> queryByPage(SimBaseInfoQuery query){
+		return simbaseInfoService.querySimBaseInfoByPage(query);
+	}
+	
+	/**
+	 * 添加
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/addSimBaseInfo",method=RequestMethod.POST)
+	public ResultJson<Integer> addSimBaseInfo(SimBaseInfo model){
+		return simbaseInfoService.addSimBaseInfo(model);
+	}
+	
+	/**
+	 * 更新
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/updSimBaseInfo",method=RequestMethod.POST)
+	public ResultJson<Integer> updSimBaseInfo(SimBaseInfo model){
+		return simbaseInfoService.updSimBaseInfo(model);
+	}
+	
+	/**
+	 * 获取单条
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="/querySimBaseInfoById")
+	public SimBaseInfo querySimBaseInfoById(String id){
+		return simbaseInfoService.querySimBaseInfoById(id);
+	}
+}

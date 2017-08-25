@@ -1,0 +1,7 @@
+package com.amwell.ecar.vo;
+
+import com.amwell.ecar.vo.base.ECarCommonResult;
+
+public class ECarSimBaseInfo extends ECarCommonResult {
+
+}

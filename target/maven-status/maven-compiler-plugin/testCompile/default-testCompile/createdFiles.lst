@@ -1,0 +1,16 @@
+com\amwell\report\ReportServiceTest.class
+com\amwell\ecar\service\ECarInterfaceServiceTest.class
+com\amwell\ex\Extest.class
+com\amwell\excel\ExcelTest.class
+com\amwell\role\RoleButtonTest.class
+com\amwell\SpringbootShiroApplicationTests.class
+com\amwell\simwaringset\SimWaringSetServiceTest.class
+com\amwell\sendMsg\SendMsg.class
+com\amwell\user\UserServiceTest.class
+com\amwell\recv\RecvTest.class
+com\amwell\credit\service\CreditQueryServiceTest.class
+com\amwell\simbaseinfo\SimBaseInfoServiceTest.class
+com\amwell\test\SpringBaseTestCase.class
+com\amwell\redis\RedisServiceTest.class
+com\amwell\credit\service\LoginServiceTest.class
+com\amwell\simcompany\SimCompanyServiceTest.class

@@ -1,0 +1,17 @@
+package com.amwell.model.simcompany;
+
+import com.amwell.model.BaseModel;
+
+public class SimCompanyQuery extends BaseModel {
+
+	private String fullName;
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+	
+}

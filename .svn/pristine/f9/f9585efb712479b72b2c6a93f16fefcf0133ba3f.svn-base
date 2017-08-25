@@ -1,0 +1,18 @@
+package com.amwell.mapper.simsendrecord;
+
+import java.util.List;
+
+import com.amwell.model.simsendrecord.SimSendRecord;
+import com.amwell.model.simsendrecord.SimSendRecordCount;
+import com.amwell.model.simsendrecord.SimSendRecordQuery;
+import com.amwell.util.MyMapper;
+
+public interface SimSendRecordMapper extends MyMapper<SimSendRecord> {
+
+	/**
+	 * 按公司统计短信发送数
+	 * @param query
+	 * @return
+	 */
+	public List<SimSendRecordCount> queryMessageByCompany(SimSendRecordQuery query);
+}

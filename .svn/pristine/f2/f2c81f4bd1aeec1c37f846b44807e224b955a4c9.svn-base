@@ -1,0 +1,13 @@
+package com.amwell.service.impl.simsendrecord;
+
+import org.springframework.stereotype.Service;
+
+import com.amwell.model.simsendrecord.SimSendRecord;
+import com.amwell.service.impl.BaseService;
+import com.amwell.service.simsendrecord.SimSendRecordService;
+
+@Service(value="simsendrecordService")
+public class SimSendRecordServiceImpl extends BaseService<SimSendRecord> implements SimSendRecordService {
+
+
+}

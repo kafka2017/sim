@@ -1,0 +1,10 @@
+package com.amwell.service.recv;
+
+import com.amwell.model.simrecv.SimRecvResult;
+import com.amwell.util.ResultJson;
+
+public interface RecvSimMessageService {
+
+	
+	ResultJson<Integer> addSimRecvResult(SimRecvResult model);
+}

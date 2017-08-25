@@ -1,0 +1,140 @@
+package com.amwell.service.impl.simbaseInfo;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.amwell.mapper.simbaseInfo.SimBaseInfoMapper;
+import com.amwell.model.Resources;
+import com.amwell.model.simbaseInfo.SimBaseInfo;
+import com.amwell.model.simbaseInfo.SimBaseInfoQuery;
+import com.amwell.service.impl.BaseService;
+import com.amwell.service.simbaseInfo.SimBaseInfoService;
+import com.amwell.util.ResultJson;
+import com.amwell.util.StatusCode;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
+import net.sf.oval.ConstraintViolation;
+import net.sf.oval.Validator;
+import tk.mybatis.mapper.entity.Example;
+
+@Service(value="simBaseInfoService")
+public class SimBaseInfoServiceImpl extends BaseService<SimBaseInfo> implements SimBaseInfoService {
+
+	@Resource
+	private SimBaseInfoMapper simBaseInfoMapper;
+
+	@Override
+	public List<SimBaseInfo> queryAll() {
+		Example example = new Example(SimBaseInfo.class);
+		return super.selectByExample(example);
+	}
+
+	@Override
+	public ResultJson<Integer> addSimBaseInfo(SimBaseInfo model) {
+		if(model==null){
+			return ResultJson.buildFailedMsg(0, "SimBaseInfo为空，添加失败");
+		}
+		
+		model.setCreateTime(new Date());
+		model.setLastUpdateTime(new Date());
+		
+		//验证
+		Validator validator = new Validator(); 
+	    List<ConstraintViolation> ret = validator.validate(model);
+		if(!ret.isEmpty()){
+			return ResultJson.buildFailedMsg(0, ret.get(0).getMessage());
+		}
+		
+		Integer mcount = simBaseInfoMapper.isExisten("msisdn", model.getMsisdn(), null);
+		if(mcount>0){
+			return ResultJson.buildFailedMsg(0, "msisdn号已存在");
+		}
+		
+		Integer icount = simBaseInfoMapper.isExisten("iccid", model.getIccid(), null);
+		if(icount>0){
+			return ResultJson.buildFailedMsg(0, "iccid已存在");
+		}
+		
+		//添加
+		try {
+			Integer i = super.save(model);
+			if(i>0){
+				return ResultJson.buildSuccessMsg(null,i,"添加成功");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		
+		return ResultJson.buildFailedMsg(0, "添加失败");
+	}
+
+	@Override
+	public ResultJson<Integer> updSimBaseInfo(SimBaseInfo model) {
+		
+		if(model==null){
+			return ResultJson.buildFailedMsg(0, "SimBaseInfo为空，更新失败");
+		}
+		model.setLastUpdateTime(new Date());
+		//验证
+		Validator validator = new Validator(); 
+	    List<ConstraintViolation> ret = validator.validate(model);
+		if(!ret.isEmpty()){
+			return ResultJson.buildFailedMsg(0, ret.get(0).getMessage());
+		}
+		
+		Integer mcount = simBaseInfoMapper.isExisten("msisdn", model.getMsisdn(), model.getId());
+		if(mcount>0){
+			return ResultJson.buildFailedMsg(0, "msisdn号已存在");
+		}
+		
+		Integer icount = simBaseInfoMapper.isExisten("iccid", model.getIccid(), model.getId());
+		if(icount>0){
+			return ResultJson.buildFailedMsg(0, "iccid已存在");
+		}
+		
+		//更新
+		try {
+			
+			SimBaseInfo sb = super.selectByKey(model.getId());
+			if(sb==null){
+				return ResultJson.buildFailedMsg(0, "SimBaseInfo对象为空");
+			}
+			
+			model.setVersion(sb.getVersion());//乐观锁并发控制
+			
+			Integer i = simBaseInfoMapper.updSimBaseInfoLock(model);
+			
+			if(i>0){
+				return ResultJson.buildSuccessMsg(null,StatusCode.SUCCESS, "更新成功");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		
+		return ResultJson.buildFailedMsg(StatusCode.EXCEPTION, "更新失败");
+	}
+
+	@Override
+	public SimBaseInfo querySimBaseInfoById(String id) {
+		return super.selectByKey(id);
+	}
+
+	@Override
+	public PageInfo<SimBaseInfo> querySimBaseInfoByPage(SimBaseInfoQuery query) {
+        Example example = new Example(SimBaseInfo.class);
+        //分页查询
+        PageHelper.startPage(query.getPage(), query.getPageSize());
+        List<SimBaseInfo> simbaseInfoList = selectByExample(example);
+        return new PageInfo<>(simbaseInfoList);
+	}
+	
+	
+	
+}

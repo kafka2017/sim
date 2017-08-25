@@ -1,0 +1,16 @@
+package com.amwell.service.simwaringset;
+
+import java.util.List;
+
+import com.amwell.model.simsendrecord.SimSendRecordQuery;
+import com.amwell.model.simwaringset.SimMessageSet;
+import com.amwell.service.IService;
+
+/**
+ * 短信阈值设置接口
+ * @author 番茄很忙
+ *
+ */
+public interface SimMessageSetService extends IService<SimMessageSet> {
+
+}

@@ -1,0 +1,54 @@
+package com.amwell.model.simsendrecord;
+
+public class SimSendRecordCount {
+
+	private Integer companyId;//公司id
+	
+	private String shortName;//公司简称
+	
+	private Integer messageCount=0;//当年短信发送数
+	
+	private Integer messageTotal=0;//短信总数
+	
+	private Integer messageExceed=0;//短信超出数
+
+	public Integer getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Integer companyId) {
+		this.companyId = companyId;
+	}
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
+	}
+
+	public Integer getMessageCount() {
+		return messageCount;
+	}
+
+	public void setMessageCount(Integer messageCount) {
+		this.messageCount = messageCount;
+	}
+
+	public Integer getMessageTotal() {
+		return messageTotal;
+	}
+
+	public void setMessageTotal(Integer messageTotal) {
+		this.messageTotal = messageTotal;
+	}
+
+	public Integer getMessageExceed() {
+		return messageExceed;
+	}
+
+	public void setMessageExceed(Integer messageExceed) {
+		this.messageExceed = messageExceed;
+	}
+}

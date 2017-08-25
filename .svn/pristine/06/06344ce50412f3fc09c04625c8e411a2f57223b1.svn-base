@@ -1,0 +1,54 @@
+//package com.amwell.config;
+//
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+//import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
+//
+//import redis.clients.jedis.JedisPoolConfig;
+////这个类用配置redis服务器的连接
+//@EnableRedisHttpSession(maxInactiveIntervalInSeconds= 1800)
+//public class SessionConfig {
+//
+//	@Value("${spring.redis.database}")
+//	private int database;
+//
+//	@Value("${spring.redis.host}")
+//	private String host;
+//
+//	@Value("${spring.redis.port}")
+//	private int port;
+//
+//	@Value("${spring.redis.password}")
+//	private String password;
+//
+//	@Value("${spring.redis.timeout}")
+//	private int timeout;
+//
+//	@Value("${spring.redis.pool.min-idle}")
+//	private int minIdle;
+//
+//	@Value("${spring.redis.pool.max-idle}")
+//	private int maxIdle;
+//
+//	@Value("${spring.redis.pool.max-wait}")
+//	private long maxWaitMillis;
+//
+//  
+//   
+//    @Bean
+//    public JedisConnectionFactory connectionFactory() {
+//    	JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+//		jedisPoolConfig.setMinIdle(minIdle);
+//		jedisPoolConfig.setMaxIdle(maxIdle);
+//		jedisPoolConfig.setMaxWaitMillis(maxWaitMillis);
+//		JedisConnectionFactory connectionFactory = new JedisConnectionFactory(jedisPoolConfig);
+//		connectionFactory.setPort(port);
+//		connectionFactory.setHostName(host);
+//		connectionFactory.setDatabase(database);
+//		connectionFactory.setPassword(password);
+//		connectionFactory.setTimeout(timeout);
+//		connectionFactory.setClientName("sim");
+//        return connectionFactory;
+//    }
+//}

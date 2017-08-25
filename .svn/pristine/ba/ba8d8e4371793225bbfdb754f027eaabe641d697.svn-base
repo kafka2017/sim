@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amwell.mapper.simbaseInfo.SimBaseInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.amwell.model.simbaseInfo.SimBaseInfo">
+	    <id column="id" jdbcType="BIGINT" property="id" />
+	    <id column="msisdn" jdbcType="VARCHAR" property="msisdn" />
+	    <id column="iccid" jdbcType="VARCHAR" property="iccid" />
+	    <id column="serviceStartDate" jdbcType="DATE" property="serviceStartDate" />
+	    <id column="serviceEndDate" jdbcType="DATE" property="serviceEndDate" />
+	    <id column="registTime" jdbcType="DATE" property="registTime" />
+	    <id column="distributeTime" jdbcType="DATE" property="distributeTime" />
+	    <id column="activationTime" jdbcType="DATE" property="activationTime" />
+	    <id column="flowCycle" jdbcType="INTEGER" property="flowCycle" />
+	    <id column="totalFlow" jdbcType="DOUBLE" property="totalFlow" />
+	    <id column="usedFlow" jdbcType="DOUBLE" property="usedFlow" />
+	    <id column="gprsStatus" jdbcType="VARCHAR" property="gprsStatus" />
+	    <id column="deviceStatus" jdbcType="VARCHAR" property="deviceStatus" />
+	    <id column="createTime" jdbcType="DATE" property="createTime" />
+	    <id column="lastUpdateTime" jdbcType="DATE" property="lastUpdateTime" />
+	    <id column="companyId" jdbcType="INTEGER" property="companyId" />
+	    <id column="remark" jdbcType="VARCHAR" property="remark" />
+	    <id column="version" jdbcType="BIGINT" property="version" />
+  </resultMap>
+  
+  <select id="queryAll" resultMap="BaseResultMap">
+  	  select * from sim_base_info
+  </select>
+</mapper>

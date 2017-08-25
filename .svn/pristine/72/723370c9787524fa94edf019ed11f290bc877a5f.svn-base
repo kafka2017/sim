@@ -1,0 +1,61 @@
+//package com.amwell.config.auth;
+//
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.context.annotation.Configuration;
+//import org.springframework.data.redis.core.RedisTemplate;
+//import org.springframework.security.authentication.AuthenticationManager;
+//import org.springframework.security.oauth2.config.annotation.builders.ClientDetailsServiceBuilder.ClientBuilder;
+//import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
+//import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
+//import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
+//import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+//import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+//import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
+//
+//import com.amwell.common.AuthResource;
+//
+///**
+// * auth 授权服务器
+// * @author 番茄很忙
+// *
+// */
+//@Configuration
+//@EnableAuthorizationServer
+//public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
+//
+//	@Autowired
+//    private RedisTemplate<String, ?> redisTemplate;
+//	
+//	@Autowired
+//	private AuthenticationManager authenticationManager;
+//	
+//	
+//	@Override
+//	public void configure(ClientDetailsServiceConfigurer clients) throws Exception{
+//		//配置两个客户端,一个用于password认证一个用于client认证
+//		ClientBuilder clientbuilder = clients.inMemory().withClient("client_1").resourceIds(AuthResource.RESOURCEID);
+//		
+//		clientbuilder.authorizedGrantTypes("client_credentials","refresh_token");
+//		clientbuilder.scopes("select");
+//		clientbuilder.authorities("client");
+//		clientbuilder.secret("123456");
+//		
+//		ClientBuilder passwordbuilder = clientbuilder.and().withClient("client_2").resourceIds(AuthResource.RESOURCEID);
+//		passwordbuilder.authorizedGrantTypes("password","refresh_token");
+//		passwordbuilder.scopes("select");
+//		passwordbuilder.authorities("client");
+//		passwordbuilder.secret("123456");
+//	}
+//	
+//	@Override
+//	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception{
+//		endpoints.allowedTokenEndpointRequestMethods();
+//		endpoints.tokenStore(new RedisTokenStore(redisTemplate.getConnectionFactory())).authenticationManager(authenticationManager);
+//	}
+//	
+//	@Override
+//	public void configure(AuthorizationServerSecurityConfigurer oauthServer)throws Exception{
+//		//允许表单认证
+//		oauthServer.allowFormAuthenticationForClients();
+//	}
+//}

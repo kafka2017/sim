@@ -1,0 +1,57 @@
+package com.amwell.ecar.service;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.amwell.ecar.vo.result.ECarDeviceStatusWrapperResult;
+import com.amwell.ecar.vo.result.ECarGprsStatusWrapperResult;
+import com.amwell.ecar.vo.result.ECarSIMListResult;
+import com.amwell.ecar.vo.result.ECarSendListWrapperResult;
+import com.amwell.ecar.vo.result.ECarSendMsgWrapperResult;
+import com.amwell.ecar.vo.result.ECarSimWrapperResult;
+import com.amwell.test.SpringBaseTestCase;
+import com.amwell.util.JSONHelper;
+
+public class ECarInterfaceServiceTest extends SpringBaseTestCase{
+
+	@Autowired
+	private ECarInterfaceService eCarInterfaceService;
+	
+	@Test
+	public void testGetSimBaseInfo() {
+		ECarSimWrapperResult result = eCarInterfaceService.getSimBaseInfo("898602B7101700082314");
+		System.out.println(JSONHelper.toString(result));
+	}
+	
+	@Test
+	public void testBatchQuerySimBaseInfo(){
+		ECarSIMListResult result = eCarInterfaceService.batchQuerySimBaseInfo("898602B7091701270097", "07", null, null, 1, 1);
+		System.err.println("result="+JSONHelper.toString(result));
+	}
+	
+	
+	@Test
+	public void testGetDeviceStatusInfo(){
+		ECarDeviceStatusWrapperResult result = eCarInterfaceService.getDeviceStatusInfo("898602B7101700082314");
+		System.out.println(JSONHelper.toString(result));
+	}
+
+	@Test
+	public void testGetGprsStatusInfo(){
+		ECarGprsStatusWrapperResult result =eCarInterfaceService.getGprsStatusInfo("898602B7101700082314");
+		System.out.println(JSONHelper.toString(result));
+	}
+	
+
+	@Test
+	public void testSendMsg(){
+		ECarSendMsgWrapperResult result =eCarInterfaceService.sendMsg("1064873972316", "短信测试");
+		System.out.println(JSONHelper.toString(result));
+	}
+	
+	@Test
+	public void testQuerySendList(){
+		ECarSendListWrapperResult result =eCarInterfaceService.querySendList("898602B7101700082314", "1064873972316", "2017-07-20 00:00:00", "2017-07-25  00:00:00", 1, 10);
+		System.out.println(JSONHelper.toString(result));
+	}
+}

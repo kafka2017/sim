@@ -1,0 +1,81 @@
+package com.amwell.service.impl.simsendrecord;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amwell.common.ErrorCodeEnum;
+import com.amwell.ecar.service.ECarInterfaceService;
+import com.amwell.ecar.vo.result.ECarSendMsgWrapperResult;
+import com.amwell.mapper.simsendrecord.SimSendRecordMapper;
+import com.amwell.model.simsendrecord.SimSendRecord;
+import com.amwell.model.simsendrecord.SimSendRecordQuery;
+import com.amwell.service.impl.BaseService;
+import com.amwell.service.simsendrecord.SimSendRecordService;
+import com.amwell.util.DateHelper;
+import com.amwell.util.ResultJson;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
+import net.sf.oval.ConstraintViolation;
+import net.sf.oval.Validator;
+
+@Service(value="simsendrecordService")
+public class SimSendRecordServiceImpl extends BaseService<SimSendRecord> implements SimSendRecordService {
+
+	@Autowired
+	ECarInterfaceService ecarService;
+	
+	@Resource
+	SimSendRecordMapper simsendrecordmapper;
+	
+	@Override
+	public ResultJson<Integer> sendMessage(SimSendRecord model) {
+		
+		//验证
+		Validator validator = new Validator(); 
+	    List<ConstraintViolation> ret = validator.validate(model);
+		if(!ret.isEmpty()){
+			return ResultJson.buildFailedMsg(ErrorCodeEnum.illegal_para.getErrorCode(), ret.get(0).getMessage());
+		}
+		
+		try {
+			//发送短信接口
+			ECarSendMsgWrapperResult result = ecarService.sendMsg(model.getIccid(), model.getContent());
+			
+			//保存发送记录
+			Integer sendStatus=0;
+			if(result.getSuccess().equals("true")){
+				sendStatus = 1;
+				model.setSendNum(result.getData()[0]);
+			}
+			
+			model.setSendStatus(sendStatus);
+			model.setCreateOn(DateHelper.getDateTimeStr(new Date()));
+			
+			Integer i = super.save(model);
+			
+			if(sendStatus==1){
+				return ResultJson.buildSuccessMsg(null, ErrorCodeEnum.op_success.getErrorCode(), ErrorCodeEnum.op_success.getErrorMsg());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		
+	    return ResultJson.buildFailedMsg(null, ErrorCodeEnum.illegal_para.getErrorCode(), ErrorCodeEnum.illegal_para.getErrorMsg());
+	}
+
+	@Override
+	public PageInfo<SimSendRecord> queryByPage(SimSendRecordQuery query) {
+		PageHelper.startPage(query.getPageNum(), query.getPageSize());
+        List<SimSendRecord> simSendRecordlist = simsendrecordmapper.querySimSendRecord(query);
+        return new PageInfo<>(simSendRecordlist);
+	}
+
+
+}

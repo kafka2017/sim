@@ -1,0 +1,20 @@
+package com.amwell.service.recv;
+
+import com.amwell.model.simrecv.SimRecvResult;
+import com.amwell.model.simrecv.SimRecvResultQuery;
+import com.amwell.service.IService;
+import com.amwell.util.ResultJson;
+import com.github.pagehelper.PageInfo;
+
+public interface RecvSimMessageService extends IService<SimRecvResult>{
+
+	
+	ResultJson<Integer> addSimRecvResult(SimRecvResult model);
+	
+	/**
+	 * 分页查询
+	 * @param query
+	 * @return
+	 */
+	PageInfo<SimRecvResult> queryByPage(SimRecvResultQuery query);
+} 

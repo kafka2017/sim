@@ -1,0 +1,28 @@
+package com.amwell.service.simbaseInfo;
+
+import java.util.List;
+
+import com.amwell.model.simbaseInfo.SimBaseInfo;
+import com.amwell.service.IService;
+import com.amwell.util.ResultJson;
+
+/**
+ * SIM卡基本信息
+ * @author 番茄很忙
+ *
+ */
+public interface SimBaseInfoService extends IService<SimBaseInfo> {
+
+	/**
+	 * 查询所有
+	 * @return
+	 */
+	public List<SimBaseInfo> queryAll();
+	
+	/**
+	 * 添加sim卡
+	 * @param model
+	 * @return
+	 */
+	public ResultJson<Integer> addSimBaseInfo(SimBaseInfo model);
+}

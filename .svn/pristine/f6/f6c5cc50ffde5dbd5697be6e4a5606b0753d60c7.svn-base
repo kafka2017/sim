@@ -1,0 +1,172 @@
+package com.amwell.service.impl.simcompany;
+
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.amwell.mapper.simcompany.SimCompanyMapper;
+import com.amwell.model.simcompany.SimCompany;
+import com.amwell.model.simcompany.SimCompanyQuery;
+import com.amwell.service.impl.BaseService;
+import com.amwell.service.simcompany.SimCompanyService;
+import com.amwell.util.ResultJson;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
+import net.sf.oval.ConstraintViolation;
+import net.sf.oval.Validator;
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+@Service(value="simcompanyService")
+public class SimCompanyServiceImpl extends BaseService<SimCompany> implements SimCompanyService {
+
+	@Resource
+	SimCompanyMapper simCompanyMapper;
+	
+	@Override
+	public PageInfo<SimCompany> querySimCompanyByPage(SimCompanyQuery query) {
+		Example example = new Example(SimCompany.class);
+		Criteria c = example.createCriteria();
+		if(query.getFullName()!=null){
+			c.andLike("fullName", "%"+query.getFullName()+"%");
+		}
+        //分页查询
+		
+        PageHelper.startPage(query.getPage(), query.getPageSize());
+        List<SimCompany> simbaseInfoList = selectByExample(example);
+        return new PageInfo<>(simbaseInfoList);
+	}
+
+	@Override
+	public List<SimCompany> querySimCompany(SimCompanyQuery query) {
+		Example example = new Example(SimCompany.class);
+		Criteria c = example.createCriteria();
+		if(query.getFullName()!=null){
+			c.andLike("fullName", "%"+query.getFullName()+"%");
+		}
+		return super.selectByExample(example);
+	}
+
+	@Override
+	public ResultJson<Integer> addSimCompany(SimCompany model) {
+		
+		if(model==null){
+			return ResultJson.buildFailedMsg(0, "SimCompany为空，添加分公司账户失败");
+		}
+		model.setCreateTime(new Date());
+		model.setLastUpdateTime(new Date());
+		model.setVersion(1L);
+		//验证
+		Validator validator = new Validator(); 
+	    List<ConstraintViolation> ret = validator.validate(model);
+		if(!ret.isEmpty()){
+			return ResultJson.buildFailedMsg(0, ret.get(0).getMessage());
+		}
+		
+		Integer fcount = simCompanyMapper.isExisten("fullName", model.getFullName(), null);
+		
+		if(fcount>0){
+			return ResultJson.buildFailedMsg(0, "公司全称已存在");
+		}
+		
+		Integer scount = simCompanyMapper.isExisten("shortName", model.getShortName(), null);
+		if(scount>0){
+			return ResultJson.buildFailedMsg(0, "公司简称已存在");
+		}
+		
+		Integer acount = simCompanyMapper.isExisten("adminLoginName", model.getAdminLoginName(), null);
+		if(acount>0){
+			return ResultJson.buildFailedMsg(0, "管理员登录名已存在");
+		}
+		
+		//添加
+		try {
+			Integer i = super.save(model);
+			if(i>0){
+				return ResultJson.buildSuccessMsg(i, "添加成功");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		
+		return ResultJson.buildFailedMsg(0, "添加失败");
+		
+	}
+
+	@Override
+	public ResultJson<Integer> updSimCompany(SimCompany model) {
+		if(model==null){
+			return ResultJson.buildFailedMsg(0, "SimBaseInfo为空，更新失败");
+		}
+		model.setLastUpdateTime(new Date());
+		model.setVersion(1L);
+		//验证
+		Validator validator = new Validator(); 
+	    List<ConstraintViolation> ret = validator.validate(model);
+		if(!ret.isEmpty()){
+			return ResultJson.buildFailedMsg(0, ret.get(0).getMessage());
+		}
+		
+		Integer fcount = simCompanyMapper.isExisten("fullName", model.getFullName(), model.getId());
+		
+		if(fcount>0){
+			return ResultJson.buildFailedMsg(0, "公司全称已存在");
+		}
+		
+		Integer scount = simCompanyMapper.isExisten("shortName", model.getShortName(), model.getId());
+		if(scount>0){
+			return ResultJson.buildFailedMsg(0, "公司简称已存在");
+		}
+		
+		Integer acount = simCompanyMapper.isExisten("adminLoginName", model.getAdminLoginName(), model.getId());
+		if(acount>0){
+			return ResultJson.buildFailedMsg(0, "管理员登录名已存在");
+		}
+		
+		//更新
+		try {
+			Integer i = super.updateAll(model);
+			if(i>0){
+				return ResultJson.buildSuccessMsg(i, "更新成功");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		
+		return ResultJson.buildFailedMsg(0, "更新失败");
+	}
+
+	@Override
+	public SimCompany queryById(Integer id) {
+		if(id==null){
+			return new SimCompany();
+		}
+		return super.selectByKey(id);
+	}
+
+	@Override
+	public ResultJson<Integer> delSimCompany(Integer id) {
+		if(id==null){
+			return ResultJson.buildFailedMsg(0, "id不能为空");
+		}
+		try {
+			Integer i = super.delete(id);
+			if(i>0){
+				return ResultJson.buildSuccessMsg(1, "删除成功");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		
+		return ResultJson.buildFailedMsg(0, "删除失败");
+	}
+
+
+}

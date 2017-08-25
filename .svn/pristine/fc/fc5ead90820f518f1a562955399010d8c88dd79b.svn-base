@@ -1,0 +1,49 @@
+package com.amwell.recv;
+
+import java.util.Date;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.amwell.model.simrecv.SimRecvResult;
+import com.amwell.model.simrecv.SimRecvResultQuery;
+import com.amwell.service.recv.RecvSimMessageService;
+import com.amwell.test.SpringBaseTestCase;
+import com.amwell.util.JSONHelper;
+import com.amwell.util.ResultJson;
+import com.github.pagehelper.PageInfo;
+
+public class RecvTest extends SpringBaseTestCase {
+
+	@Autowired
+	RecvSimMessageService recvService;
+	
+	@Test
+	public void add(){
+		SimRecvResult model = new SimRecvResult();
+		model.setId(1L);
+		model.setBusinessId(24232L);
+		model.setCode("AD");
+		model.setContent("1");
+		model.setCreateDate(new Date());
+		model.setIccid("1ccds");
+		model.setMobile("18777142423");
+		model.setPushResult("2");
+		model.setReason("2");
+		model.setReceiveMobile("12312");
+		model.setSerialNumber("232");
+		model.setSmsCreateDate(new Date());
+		model.setSpNumber("121");
+		model.setStatus(1);
+		ResultJson<Integer> rs = recvService.addSimRecvResult(model);
+		System.out.println(JSONHelper.toString(rs));
+	}
+	
+	@Test
+	public void q(){
+		SimRecvResultQuery query = new SimRecvResultQuery();
+		query.setIccid("898602B7101700082737");
+		PageInfo<SimRecvResult> p = recvService.queryByPage(query);
+		System.out.println(JSONHelper.toString(p));
+	}
+}

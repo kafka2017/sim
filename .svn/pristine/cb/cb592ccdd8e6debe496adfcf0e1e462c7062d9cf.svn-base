@@ -1,0 +1,172 @@
+package com.amwell.controller;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.amwell.model.User;
+import com.amwell.model.report.SimWaring;
+import com.amwell.model.simcompany.SimCompanyQuery;
+import com.amwell.model.simcompany.SimCompanyReport;
+import com.amwell.model.simsendrecord.SimSendRecordCount;
+import com.amwell.model.simsendrecord.SimSendRecordQuery;
+import com.amwell.service.report.ReportService;
+import com.amwell.util.JSONHelper;
+import com.amwell.util.ResultJson;
+import com.amwell.util.StatusCode;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+
+
+@Controller
+public class HomeController {
+	
+	@Autowired
+	private ReportService reportService;
+	
+	
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String login() {
+		return "login";
+	}
+
+	/**
+	 * 登录
+	 * @param request
+	 * @param user
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public ResultJson<Integer> login(HttpServletRequest request,User user) {
+		//response.addHeader("Access-Control-Allow-Origin","*") ;
+		System.err.println(JSONHelper.toString(user));
+		if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
+			request.setAttribute("msg", "用户名或密码不能为空！");
+			return ResultJson.buildFailedMsg(-1, "用户名或密码不能为空！");
+		}
+		Subject subject = SecurityUtils.getSubject();
+		UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword());
+		try {
+			subject.login(token);
+			return ResultJson.buildSuccessMsg(null,1, "登录成功");
+		} catch (LockedAccountException lae) {
+			token.clear();
+			request.setAttribute("msg", "用户已经被锁定不能登录，请与管理员联系！");
+			return ResultJson.buildFailedMsg(-2, "用户已经被锁定不能登录，请与管理员联系！");
+		} catch (AuthenticationException e) {
+			token.clear();
+			request.setAttribute("msg", "用户或密码不正确！");
+			return ResultJson.buildFailedMsg(0, "用户或密码不正确！");
+		}
+	}
+	
+	/**
+	 * sim卡状态统计
+	 * @param query
+	 * @return
+	 */
+	@RequestMapping(value = "/simStatusReport", produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public ResultJson<List<SimCompanyReport>> simStatusReport(SimCompanyQuery query){
+		Session session = SecurityUtils.getSubject().getSession();
+		User user = (User)session.getAttribute("userSession");
+		if(user==null){
+			return ResultJson.buildFailedMsg(StatusCode.LOGIN_OUT, "登录超时");
+		}
+		query.setUserid(user.getId());
+		List<SimCompanyReport> list = reportService.simStatusReport(query);
+		
+		if(list==null){
+			list = new ArrayList<SimCompanyReport>();
+		}
+		
+		return ResultJson.buildSuccessMsg(list, StatusCode.SUCCESS, "查询成功");
+	}
+	
+	/**
+	 * sim卡流量阈值统计
+	 * @param query
+	 * @return
+	 */
+	@RequestMapping(value = "/simWaringReport", produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public ResultJson<List<SimWaring>> simWaringReport(SimCompanyQuery query){
+		Session session = SecurityUtils.getSubject().getSession();
+		User user = (User)session.getAttribute("userSession");
+		if(user==null){
+			return ResultJson.buildFailedMsg(StatusCode.LOGIN_OUT, "登录超时");
+		}
+		query.setUserid(user.getId());
+		List<SimWaring> list = reportService.simWaringReport(query);
+		
+		if(list==null){
+			list = new ArrayList<SimWaring>();
+		}
+		
+		return ResultJson.buildSuccessMsg(list, StatusCode.SUCCESS, "查询成功");
+	}
+	
+	/**
+	 * 短信发送阈值统计
+	 * @param query
+	 * @return
+	 */
+	@RequestMapping(value = "/simMessageRecord", produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public ResultJson<SimSendRecordCount> simMessageRecord(SimSendRecordQuery query){
+		Session session = SecurityUtils.getSubject().getSession();
+		User user = (User)session.getAttribute("userSession");
+		if(user==null){
+			return ResultJson.buildFailedMsg(StatusCode.LOGIN_OUT, "登录超时");
+		}
+		query.setCompanyId(user.getSimcompanyId());
+		
+		SimSendRecordCount sim = reportService.simMessageRecord(query);
+		
+		if(sim==null){
+			sim = new SimSendRecordCount();
+		}
+		
+		return ResultJson.buildSuccessMsg(sim, StatusCode.SUCCESS, "查询成功");
+	}
+	
+
+	@RequestMapping(value = { "/usersPage", "" })
+	public String usersPage() {
+		return "user/users";
+	}
+
+	@RequestMapping("/rolesPage")
+	public String rolesPage() {
+		return "role/roles";
+	}
+
+	@RequestMapping("/resourcesPage")
+	public String resourcesPage() {
+		return "resources/resources";
+	}
+
+	@RequestMapping("/403")
+	public String forbidden() {
+		return "403";
+	}
+}

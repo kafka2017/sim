@@ -1,0 +1,43 @@
+package com.amwell.model;
+
+/**
+ * 分页工具类
+ * @author 番茄很忙
+ *
+ */
+public class BaseModel {
+
+	public Integer start=1;
+	
+	public Integer length=10;
+	
+	public Integer Page;
+	
+
+	public Integer getStart() {
+		return start;
+	}
+
+	public void setStart(Integer start) {
+		this.start = start;
+	}
+
+	public Integer getLength() {
+		return length;
+	}
+
+	public void setLength(Integer length) {
+		this.length = length;
+	}
+
+	public Integer getPage() {
+		Page = start/length+1;
+		return Page;
+	}
+
+	public void setPage(Integer page) {
+		Page = page;
+	}
+	
+	
+}

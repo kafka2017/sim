@@ -1,0 +1,124 @@
+package com.amwell.model.simsendrecord;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.constraint.NotNull;
+
+@Entity
+@Table(name="sim_send_record")
+public class SimSendRecord {
+
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	
+	@NotNull(message="iccid卡号不能为空")
+	@NotEmpty(message="iccid卡号不能为空")
+	@Column(name="iccid",length=50)
+	private String iccid;//
+	
+	@NotNull(message="msisdn卡号不能为空")
+	@NotEmpty(message="msisdn卡号不能为空")
+	@Column(name="msisdn",length=50)
+	private String msisdn;
+	
+	@NotNull(message="发送内容不能为空")
+	@NotEmpty(message="发送内容不能为空")
+	@Column(name="content")
+	private String content;//发送的内容
+	
+	@Column(name="createBy")
+	private Integer createBy;//创建人，关联user表的主键id
+	
+	@Column(name="createOn")
+	private String createOn;//创建时间
+	
+	@Column(name="sendNum")
+	private Long sendNum;//新增编号
+	
+	@Column(name="sendStatus")
+	private int sendStatus;//接口请求返回的发送状态：0:失败 1：成功
+	
+	@Transient
+	private String arrMsisdn;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getIccid() {
+		return iccid;
+	}
+
+	public void setIccid(String iccid) {
+		this.iccid = iccid;
+	}
+
+	public String getContent() {
+		return content;
+	}
+
+	public void setContent(String content) {
+		this.content = content;
+	}
+
+	public Integer getCreateBy() {
+		return createBy;
+	}
+
+	public void setCreateBy(Integer createBy) {
+		this.createBy = createBy;
+	}
+
+	public String getCreateOn() {
+		return createOn;
+	}
+
+	public void setCreateOn(String createOn) {
+		this.createOn = createOn;
+	}
+
+	public Long getSendNum() {
+		return sendNum;
+	}
+
+	public void setSendNum(Long sendNum) {
+		this.sendNum = sendNum;
+	}
+
+	public int getSendStatus() {
+		return sendStatus;
+	}
+
+	public void setSendStatus(int sendStatus) {
+		this.sendStatus = sendStatus;
+	}
+
+	public String getMsisdn() {
+		return msisdn;
+	}
+
+	public void setMsisdn(String msisdn) {
+		this.msisdn = msisdn;
+	}
+
+	public String getArrMsisdn() {
+		return arrMsisdn;
+	}
+
+	public void setArrMsisdn(String arrMsisdn) {
+		this.arrMsisdn = arrMsisdn;
+	}
+	
+}

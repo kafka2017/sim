@@ -1,0 +1,27 @@
+package com.amwell.model.simsendrecord;
+
+import com.amwell.model.BaseModel;
+
+public class SimSendRecordQuery extends BaseModel {
+
+	private Integer companyId;
+	
+	private Integer userid;
+
+	public Integer getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(Integer companyId) {
+		this.companyId = companyId;
+	}
+
+	public Integer getUserid() {
+		return userid;
+	}
+
+	public void setUserid(Integer userid) {
+		this.userid = userid;
+	}
+	
+}

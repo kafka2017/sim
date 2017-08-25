@@ -1,0 +1,12 @@
+package com.amwell.mapper.simbaseInfo;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.amwell.model.simbaseInfo.SimBaseInfo;
+import com.amwell.util.MyMapper;
+
+public interface SimBaseInfoMapper extends MyMapper<SimBaseInfo>{
+
+	//是否存在
+	public Integer isExisten(@Param("col") String col,@Param("val") String val,@Param("id") Long id);
+}

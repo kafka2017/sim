@@ -1,0 +1,120 @@
+package com.amwell.model.simcompany;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import io.swagger.annotations.ApiModelProperty;
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.constraint.NotNull;
+
+@Table(name="sim_company")
+public class SimCompany {
+
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	
+	@NotNull(message="公司全称不能为空")
+	@NotEmpty(message="公司全称不能为空")
+	@Column(name="fullName",length=100)
+	private String fullName;//公司全称
+	
+	@NotNull(message="公司简称不能为空")
+	@NotEmpty(message="公司简称不能为空")
+	@Column(name="shortName",length=100)
+	@ApiModelProperty(value="公司简称")
+	private String shortName;//公司简称
+	
+	@NotNull(message="管理员类型不能为空")
+	@NotEmpty(message="管理员类型不能为空")
+	@Column(name="adminType")
+	private Integer adminType;//管理员类型 0:总公司类型，可访问所有子公司数据 1:分公司类型，只能访问其下的公司数据
+	
+	@Column(name="createTime")
+	private Date createTime;//创建时间
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="lastUpdateTime",nullable = false,length=10)
+	private Date lastUpdateTime;//最后更新时间
+	
+	@NotNull(message="父级id不能为空")
+	@NotEmpty(message="父级id不能为空")
+	@Column(name="parentId")
+	private Integer parentId;//父级id
+	
+	@Column(name="version")
+	private Long version;//乐观锁控制,版本号，每次修改后，此版本号加1
+	
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
+	}
+
+
+	public Integer getAdminType() {
+		return adminType;
+	}
+
+	public void setAdminType(Integer adminType) {
+		this.adminType = adminType;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getLastUpdateTime() {
+		return lastUpdateTime;
+	}
+
+	public void setLastUpdateTime(Date lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+
+	public Integer getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Integer parentId) {
+		this.parentId = parentId;
+	}
+}

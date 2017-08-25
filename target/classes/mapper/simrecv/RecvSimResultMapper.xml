@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amwell.mapper.recv.RecvSimResultMapper">
+  <resultMap id="BaseResultMap" type="com.amwell.model.simrecv.SimRecvResult">
+	    <id column="id" jdbcType="BIGINT" property="id" />
+	    <result column="iccid" jdbcType="VARCHAR" property="iccid" />
+	    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+	    <result column="receiveMobile" jdbcType="VARCHAR" property="receiveMobile" />
+	    <result column="status" jdbcType="INTEGER" property="status" />
+	    <result column="content" jdbcType="VARCHAR" property="content" />
+	    <result column="reason" jdbcType="VARCHAR" property="reason" />
+	    <result column="code" jdbcType="VARCHAR" property="code" />
+	    <result column="smsCreateDate" jdbcType="DATE" property="smsCreateDate" />
+	    <result column="serialNumber" jdbcType="VARCHAR" property="serialNumber" />
+	    <result column="pushResult" jdbcType="VARCHAR" property="pushResult" />
+	    <result column="spNumber" jdbcType="VARCHAR" property="spNumber" />
+	    <result column="createDate" jdbcType="DATE" property="createDate" />
+  </resultMap>
+  
+  <select id="querySimRecvResult" resultType="SimRecvResult" parameterType="SimRecvResultQuery">
+  	select a.id,a.iccid,a.mobile,a.receiveMobile,a.status,a.`content`,a.reason,a.code,a.smsCreateDate,a.serialNumber,a.pushResult,a.spNumber,a.createDate,
+  		  (case a.status when 0 then '失败'
+  		  				 when 1 then '成功' end) as status_msg,
+  		  date_format(a.smsCreateDate,'%Y-%m-%d %H:%i') as smsCreateDate_s,
+  		  date_format(a.createDate,'%Y-%m-%d %H:%i') as createDate_s
+  	from sim_recv_record a
+  	<where>
+  		<if test="iccid!=null and iccid!=''">
+  			and a.iccid like concat('%',#{iccid},'%')
+  		</if>
+  	</where>
+	order by a.createDate desc  	
+  </select>
+
+</mapper>

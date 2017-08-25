@@ -1,0 +1,13 @@
+package com.amwell.service.impl.simwaringset;
+
+import org.springframework.stereotype.Service;
+
+import com.amwell.model.simwaringset.SimMessageSet;
+import com.amwell.service.impl.BaseService;
+import com.amwell.service.simwaringset.SimMessageSetService;
+
+@Service(value="simMessageSetService")
+public class SimMessageSetServiceImpl extends BaseService<SimMessageSet> implements SimMessageSetService {
+
+
+}

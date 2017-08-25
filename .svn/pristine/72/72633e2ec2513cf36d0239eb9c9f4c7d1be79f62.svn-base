@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amwell.mapper.recv.RecvSimResultMapper">
+  <resultMap id="BaseResultMap" type="com.amwell.model.simrecv.SimRecvResult">
+	    <id column="id" jdbcType="BIGINT" property="id" />
+	    <result column="iccid" jdbcType="VARCHAR" property="iccid" />
+	    <result column="mobile" jdbcType="VARCHAR" property="mobile" />
+	    <result column="receiveMobile" jdbcType="VARCHAR" property="receiveMobile" />
+	    <result column="status" jdbcType="INTEGER" property="status" />
+	    <result column="content" jdbcType="VARCHAR" property="content" />
+	    <result column="reason" jdbcType="VARCHAR" property="reason" />
+	    <result column="code" jdbcType="VARCHAR" property="code" />
+	    <result column="smsCreateDate" jdbcType="DATE" property="smsCreateDate" />
+	    <result column="serialNumber" jdbcType="VARCHAR" property="serialNumber" />
+	    <result column="pushResult" jdbcType="VARCHAR" property="pushResult" />
+	    <result column="spNumber" jdbcType="VARCHAR" property="spNumber" />
+	    <result column="createDate" jdbcType="DATE" property="createDate" />
+  </resultMap>
+  
+
+</mapper>

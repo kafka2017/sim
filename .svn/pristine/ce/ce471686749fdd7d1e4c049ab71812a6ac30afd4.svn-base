@@ -1,0 +1,18 @@
+package com.amwell.service.simwaringset;
+
+import org.springframework.transaction.annotation.Transactional;
+
+import com.amwell.model.simwaringset.SimWaringSet;
+import com.amwell.service.IService;
+import com.amwell.util.ResultJson;
+
+/**
+ * 流量阈值设置接口
+ * @author 番茄很忙
+ *
+ */
+public interface SimWaringSetService extends IService<SimWaringSet> {
+
+	@Transactional
+	ResultJson<Integer> addSimWar(SimWaringSet model);
+}

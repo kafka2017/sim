@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amwell.mapper.report.SimCompanyReportMapper">
+
+    <select id="querySimpanyReport" resultType="com.amwell.model.simcompany.SimCompanyReport" parameterType="com.amwell.model.simcompany.SimCompanyQuery">
+  		SELECT 
+			b.shortName,b.id,b.parentId,
+			sum((case a.carState when '00' then 1 else 0 end)) as countEnable,<!-- 正常 -->
+		    sum((case a.carState when '01' then 1 else 0 end)) as countUnknown,<!-- 未知 -->
+			sum((case a.carState when '02' then 1 else 0 end)) as countDisable,<!-- 停机 -->
+			sum((case a.carState when '07' then 1 else 0 end)) as countSilence,<!-- 待激活 -->
+			sum(case when #{setVal}<![CDATA[ < ]]>a.usedFlow/a.totalFlow and a.usedFlow/a.totalFlow<![CDATA[ < ]]>1 then 1 else 0 end ) as countWarn,<!-- 警 -->
+			SUM(case when a.usedFlow/a.totalFlow>1 then 1 else 0 end) as countExceed <!-- 超 -->
+		from sim_base_info a
+		left join sim_company b on a.companyId = b.id
+		left join `user` c on c.simcompanyId = b.id
+		<include refid="qw"></include>		
+		GROUP BY b.shortName
+		order by a.id
+  </select>
+  
+  <select id="simStatusReport" resultType="com.amwell.model.simcompany.SimCompanyReport" parameterType="com.amwell.model.simcompany.SimCompanyQuery">
+  		SELECT 
+			b.shortName,b.id,b.parentId,
+			sum((case a.carState when '00' then 1 else 0 end)) as countEnable,<!-- 正常 -->
+		    sum((case a.carState when '01' then 1 else 0 end)) as countUnknown,<!-- 未知 -->
+			sum((case a.carState when '02' then 1 else 0 end)) as countDisable,<!-- 停机 -->
+			sum((case a.carState when '07' then 1 else 0 end)) as countSilence,<!-- 待激活 -->
+			sum(case when #{setVal}<![CDATA[ < ]]>a.usedFlow/a.totalFlow and a.usedFlow/a.totalFlow<![CDATA[ < ]]>1 then 1 else 0 end ) as countWarn,<!-- 警 -->
+			SUM(case when a.usedFlow/a.totalFlow>1 then 1 else 0 end) as countExceed <!-- 超 -->
+		from sim_base_info a
+		left join sim_company b on a.companyId = b.id
+		left join `user` c on c.simcompanyId = b.id
+		<include refid="qw"></include>
+  </select>
+  
+  <select id="simWaringReport" resultType="com.amwell.model.report.SimWaring" parameterType="com.amwell.model.simcompany.SimCompanyQuery">
+  		SELECT 
+			b.shortName,b.id,b.parentId,
+			sum(case when #{setVal}<![CDATA[ < ]]>a.usedFlow/a.totalFlow and a.usedFlow/a.totalFlow<![CDATA[ < ]]>1 then 1 else 0 end ) as countWarn,
+			SUM(case when a.usedFlow/a.totalFlow>1 then 1 else 0 end) as countExceed 
+		from sim_base_info a
+		left join sim_company b on a.companyId = b.id
+		left join `user` c on c.simcompanyId = b.id
+		<include refid="qw"></include>
+  </select>
+  
+  <sql id="qw">
+  	<where>
+  		<if test="userid!=null">
+  			and c.id = #{userid}
+  		</if>
+  		<if test="fullName!=null">
+  			and a.fullName like CONCAT('%',#{fullName},'%')
+  		</if>
+  		<if test="companyId!=null">
+  			and b.id = #{companyId}
+  		</if>
+  	</where>
+  </sql>
+  
+</mapper>

@@ -1,0 +1,152 @@
+package com.amwell.ecar.service.impl;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+
+import com.amwell.ecar.handler.sim.SIMBaseInfoHandler;
+import com.amwell.ecar.handler.sim.SIMDeviceStatusHandler;
+import com.amwell.ecar.handler.sim.SIMGprsStatusHandler;
+import com.amwell.ecar.handler.sim.SIMListHandler;
+import com.amwell.ecar.handler.sim.SIMSendListHandler;
+import com.amwell.ecar.handler.sim.SIMSendMsgHandler;
+import com.amwell.ecar.service.ECarInterfaceService;
+import com.amwell.ecar.vo.request.ECarCommonQuery;
+import com.amwell.ecar.vo.result.ECarDeviceStatusWrapperResult;
+import com.amwell.ecar.vo.result.ECarGprsStatusWrapperResult;
+import com.amwell.ecar.vo.result.ECarSIMListResult;
+import com.amwell.ecar.vo.result.ECarSIMListWrapperResult;
+import com.amwell.ecar.vo.result.ECarSendListWrapperResult;
+import com.amwell.ecar.vo.result.ECarSendMsgWrapperResult;
+import com.amwell.ecar.vo.result.ECarSimWrapperResult;
+import com.amwell.util.HttpClientUtils;
+import com.amwell.util.JSONHelper;
+
+@Service
+public class ECarInterfaceServiceImpl implements ECarInterfaceService {
+
+	private static final String SERVER_PORT = "http://eoc.e-car.cn:7070/";
+
+	private static final String URL_REQ_SIM = SERVER_PORT + "service/pflow/simInfo/cardInfo";
+
+	private static final String URL_BATCH_REQ_SIM = SERVER_PORT + "service/pflow/simInfo/cardList";
+	
+	private static final String URL_REQ_DEVICE_STATUS= SERVER_PORT + "service/pflow/simInfo/queryDeviceStatus";
+	
+	private static final String URL_REQ_GPRS_STATUS =SERVER_PORT + "service/pflow/simInfo/getGprsStatus";
+	
+	private static final String URL_SEND_MSG=SERVER_PORT + "service/simReceiveSms/saveReceiveSms";
+	
+	private static final String URL_QUERY_SEND=SERVER_PORT +"service/simSendSms/pageList";
+
+	
+	/**
+	 * 查询SIM卡信息
+	 * @param iccid SIM卡iccid号
+	 */
+	@Override
+	public ECarSimWrapperResult getSimBaseInfo(String iccid) {
+		Map<String,Object> paraMap = new HashMap<String,Object>();
+		paraMap.put("iccid", iccid);
+		paraMap= ECarCommonQuery.buildRequestParams(paraMap);
+		return HttpClientUtils.doPost(URL_REQ_SIM, paraMap,new SIMBaseInfoHandler());
+	}
+
+	@Override
+	public ECarSIMListWrapperResult batchQuerySimBaseInfo(String iccid, String status, String startDate, String endDate,int currPage, int pageSize) {
+		Map<String,Object> paraMap = new HashMap<String,Object>();
+		if(StringUtils.hasText(iccid)){
+			paraMap.put("iccid", iccid);
+		}
+		if(StringUtils.hasText(status)){
+			paraMap.put("status", status);
+		}
+		if(StringUtils.hasText(startDate)){
+			paraMap.put("startDate", startDate);
+		}
+		if(StringUtils.hasText(endDate)){
+			paraMap.put("endDate", endDate);
+		}
+		paraMap.put("currPage", currPage<1?1:currPage);
+		paraMap.put("pageSize", pageSize<1?10:pageSize);
+		paraMap= ECarCommonQuery.buildRequestParams(paraMap);
+		//String s = HttpClientUtils.doPost(URL_BATCH_REQ_SIM, paraMap);
+		//System.out.println("s"+s);
+		ECarSIMListWrapperResult result = HttpClientUtils.doPost(URL_BATCH_REQ_SIM, paraMap, new SIMListHandler());
+		System.out.println("请求地址："+URL_BATCH_REQ_SIM);
+		System.out.println("请求参数："+JSONHelper.toString(paraMap));
+		if(result!=null&&null!=result.getData()){
+			ECarSIMListResult finalResult =  result.getData();
+			System.out.println("返回结果："+JSONHelper.toString(finalResult));
+		}
+		return result;
+	}
+	
+	
+	/**
+	 * 查询SIM卡设备状态
+	 * @param iccid
+	 * @return ECarDeviceStatusWrapperResult
+	 */
+	@Override
+	public ECarDeviceStatusWrapperResult getDeviceStatusInfo(String iccid) {
+		Map<String,Object> paraMap = new HashMap<String,Object>();
+		paraMap.put("iccid", iccid);
+		paraMap= ECarCommonQuery.buildRequestParams(paraMap);
+		return HttpClientUtils.doPost(URL_REQ_DEVICE_STATUS, paraMap,new SIMDeviceStatusHandler());
+	}
+
+	/**
+	 * 查询SIM卡GPRS状态
+	 * @param iccid
+	 * @return ECarGprsStatusWrapperResult
+	 */
+	@Override
+	public ECarGprsStatusWrapperResult getGprsStatusInfo(String iccid) {
+		Map<String,Object> paraMap = new HashMap<String,Object>();
+		paraMap.put("iccid", iccid);
+		paraMap= ECarCommonQuery.buildRequestParams(paraMap);
+		return HttpClientUtils.doPost(URL_REQ_GPRS_STATUS, paraMap,new SIMGprsStatusHandler());
+	}
+
+	/**
+	 * 发送短信
+	 */
+	@Override
+	public ECarSendMsgWrapperResult sendMsg(String mobile, String content) {
+		Map<String,Object> paraMap = new HashMap<String,Object>();
+		paraMap.put("mobile", mobile);
+		paraMap.put("content", content);
+		paraMap= ECarCommonQuery.buildRequestParams(paraMap);
+		System.err.println("paraMap="+JSONHelper.toString(paraMap));
+		return HttpClientUtils.doPost(URL_SEND_MSG, paraMap,new SIMSendMsgHandler());
+	}
+
+	/**
+	 * 查询短信发送列表
+	 */
+	@Override
+	public ECarSendListWrapperResult querySendList(String iccid, String mobile, String startDate, String endDate,Integer currPage, Integer pageSize) {
+		Map<String,Object> paraMap = new HashMap<String,Object>();
+		paraMap.put("iccid", iccid);
+		if(StringUtils.hasText(mobile)){
+			paraMap.put("mobile", mobile);
+		}
+		if(StringUtils.hasText(startDate)){
+			paraMap.put("startDate", startDate);
+		}
+		
+		if(StringUtils.hasText(endDate)){
+			paraMap.put("endDate", endDate);
+		}
+		paraMap.put("currPage", currPage);
+		paraMap.put("pageSize", pageSize);
+		paraMap= ECarCommonQuery.buildRequestParams(paraMap);
+		String s = HttpClientUtils.doPost(URL_QUERY_SEND, paraMap);
+		System.out.println("result="+s);
+		return HttpClientUtils.doPost(URL_QUERY_SEND, paraMap,new SIMSendListHandler());
+	}
+
+}

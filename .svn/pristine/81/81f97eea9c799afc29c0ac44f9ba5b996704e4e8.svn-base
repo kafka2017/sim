@@ -1,0 +1,88 @@
+package com.amwell.service.simcompany;
+
+import java.util.List;
+import java.util.Map;
+
+import org.json.JSONException;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.amwell.model.simcompany.SimCompany;
+import com.amwell.model.simcompany.SimCompanyQuery;
+import com.amwell.model.simcompany.SimCompanyReport;
+import com.amwell.model.simcompany.SimCompanyStatTreeNode;
+import com.amwell.model.simcompany.SimCompanyTreeNode;
+import com.amwell.service.IService;
+import com.amwell.util.ResultJson;
+import com.github.pagehelper.PageInfo;
+
+/**
+ * 分公司账户
+ * @author 番茄很忙
+ *
+ */
+public interface SimCompanyService extends IService<SimCompany> {
+
+	/**
+	 * 分页查询
+	 * @param query
+	 * @return
+	 */
+	public PageInfo<SimCompany> querySimCompanyByPage(SimCompanyQuery query);
+	
+	/**
+	 * 不分页查询,返回tree
+	 * @param query
+	 * @return
+	 */
+	public Map<String,Object> querySimCompany(SimCompanyQuery query)throws JSONException;
+	
+	/**
+	 * 添加
+	 * @param model
+	 * @return
+	 */
+	@Transactional
+	public ResultJson<Integer> addSimCompany(SimCompany model);
+	
+	/**
+	 * 更新
+	 * @param model
+	 * @return
+	 */
+	public ResultJson<Integer> updSimCompany(SimCompany model);
+	
+	/**
+	 * 查询单条
+	 * @param id
+	 * @return
+	 */
+	public SimCompany queryById(Integer id);
+	
+	/**
+	 * 删除
+	 * @param id
+	 * @return
+	 */
+	public ResultJson<Integer> delSimCompany(Integer id);
+	
+	/**
+	 * 按公司统计不同状态的
+	 * @param query
+	 * @return
+	 */
+	public List<SimCompanyReport> querySimCompanyReport(SimCompanyQuery query);
+	
+	/**
+	 * 递归查询公司树
+	 * @param companyId
+	 * @return
+	 */
+	public SimCompanyTreeNode querySimCompanyTree(Integer companyId);
+	
+	/**
+	 * 递归查询公司统计树
+	 * @param query
+	 * @return
+	 */
+	public SimCompanyStatTreeNode querySimCompanyStatTree(Integer companyId);
+}

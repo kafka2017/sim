@@ -1,0 +1,28 @@
+package com.amwell.ecar.service;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.amwell.ecar.vo.base.ECarCommonResult;
+import com.amwell.ecar.vo.query.ECarCommonQuery;
+import com.amwell.test.SpringBaseTestCase;
+import com.amwell.util.JSONHelper;
+
+public class ECarInterfaceServiceTest extends SpringBaseTestCase{
+
+	@Autowired
+	private ECarInterfaceService eCarInterfaceService;
+	
+	@Test
+	public void testGetSimBaseInfo() {
+		Map<String, String> params = new HashMap<String,String>();
+		params.put("iccid", "898602B7101700082314");
+		ECarCommonQuery query = new ECarCommonQuery(params);
+		ECarCommonResult result = eCarInterfaceService.getSimBaseInfo(query);
+		System.out.println(JSONHelper.toString(result));
+	}
+
+}

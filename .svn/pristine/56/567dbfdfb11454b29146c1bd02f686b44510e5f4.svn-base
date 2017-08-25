@@ -1,0 +1,51 @@
+package com.amwell.simbaseinfo;
+
+import java.util.Date;
+import java.util.List;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.amwell.model.simbaseInfo.SimBaseInfo;
+import com.amwell.service.simbaseInfo.SimBaseInfoService;
+import com.amwell.test.SpringBaseTestCase;
+import com.amwell.util.JSONHelper;
+import com.amwell.util.ResultJson;
+
+public class SimBaseInfoServiceTest extends SpringBaseTestCase {
+
+	@Autowired
+	private SimBaseInfoService simbaseInfoService;
+	
+	@Test
+	public void q(){
+		List<SimBaseInfo> l = simbaseInfoService.queryAll();
+		for(SimBaseInfo sb:l){
+			System.err.println("id:"+sb.getId());
+		}
+		//System.out.println(JSONHelper.toString(l));
+	}
+	
+	@Test
+	public void add(){
+		SimBaseInfo model = new SimBaseInfo();
+		model.setMsisdn("ACD1002121");
+		model.setIccid("AC12201");
+		model.setServiceStartDate(new Date());
+		model.setServiceEndDate(new Date());
+		model.setRegistTime(new Date());
+		model.setDistributeTime(new Date());
+		model.setActivationTime(new Date());
+		model.setFlowCycle(1);
+		model.setTotalFlow(2D);
+		model.setUsedFlow(3D);
+		model.setGprsStatus("2");
+		model.setDeviceStatus("5");
+		model.setCreateTime(new Date());
+		model.setCompanyId(1);
+		model.setRemark("说明");
+		model.setVersion(1L);
+		ResultJson<Integer> i = simbaseInfoService.addSimBaseInfo(model);
+		System.err.println(JSONHelper.toString(i));
+	}
+}

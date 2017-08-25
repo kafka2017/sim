@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amwell.mapper.simcompany.SimCompanyMapper">
+
+    <resultMap id="BaseResultMap" type="com.amwell.model.simcompany.SimCompany">
+	    <id column="id" jdbcType="INTEGER" property="id" />
+	    <id column="fullName" jdbcType="VARCHAR" property="fullName" />
+	    <id column="shortName" jdbcType="VARCHAR" property="shortName" />
+	    <id column="adminType" jdbcType="INTEGER" property="adminType" />
+	    <id column="createTime" jdbcType="DATE" property="createTime" />
+	    <id column="lastUpdateTime" jdbcType="DATE" property="lastUpdateTime" />
+	    <id column="version" jdbcType="BIGINT" property="version" />
+	    <id column="parentId" jdbcType="INTEGER" property="parentId" />
+  </resultMap>
+  
+  <select id="isExisten"  resultType="Integer" >
+  		select COUNT(1) from sim_company
+  		<where>
+	  		<choose>
+	  			<when test="col == 'fullName'">
+	  				and fullName = #{val}
+	  			</when>
+	  			<when test="col == 'shortName'">
+	  				and shortName = #{val}
+	  			</when>
+	  			<when test="col == 'adminLoginName'">
+	  				and adminLoginName = #{val}
+	  			</when>
+	  			<otherwise>
+	  				and 1=2
+	  			</otherwise>
+	  		</choose>
+	  		<if test="id != null">
+	  			and id != #{id}
+	  		</if>
+  		</where>
+  </select>
+  
+  <update id="updSimCompanyLock" parameterType="com.amwell.model.simcompany.SimCompany">
+  		update sim_company 
+  		<trim prefix="set" suffixOverrides=",">
+  			<if test="fullName!=null">
+  				fullName = #{fullName},
+  			</if>
+  			<if test="shortName!=null">
+  				shortName = #{shortName},
+  			</if>
+  			
+  			<if test="adminType!=null">
+  				adminType = #{adminType},
+  			</if>
+  			<if test="lastUpdateTime!=null">
+  				lastUpdateTime = #{lastUpdateTime},
+  			</if>
+  			<if test="parentId!=null">
+  				parentId = #{parentId},
+  			</if>
+  			<if test="version!=null">
+  				version=version+1,
+  			</if>
+  		</trim>
+  		where id = #{id} and version=#{version}
+  </update>
+  
+</mapper>

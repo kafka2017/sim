@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amwell.mapper.RoleButtonMapper">
+  <resultMap id="BaseResultMap" type="com.amwell.model.RoleButton">
+    
+    <id column="roleButtonId" jdbcType="INTEGER" property="roleButtonId" />
+    <id column="resourcesId" jdbcType="INTEGER" property="resourcesId" />
+    <id column="bName" jdbcType="VARCHAR" property="bName" />
+    <id column="enable" jdbcType="INTEGER" property="enable" />
+  </resultMap>
+  
+  <select id="queryRoleButton" resultType="com.amwell.model.RoleButton">
+  	select roleButtonId,resourcesId,bName,enable from role_button
+  </select>
+</mapper>

@@ -1,0 +1,71 @@
+package com.amwell.simcompany;
+
+import java.util.List;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.amwell.model.simcompany.SimCompany;
+import com.amwell.model.simcompany.SimCompanyQuery;
+import com.amwell.service.simcompany.SimCompanyService;
+import com.amwell.test.SpringBaseTestCase;
+import com.amwell.util.JSONHelper;
+import com.amwell.util.ResultJson;
+import com.github.pagehelper.PageInfo;
+
+public class SimCompanyServiceTest extends SpringBaseTestCase {
+
+	@Autowired
+	SimCompanyService simcompanyService;
+	
+	@Test
+	public void qppage(){
+		SimCompanyQuery query = new SimCompanyQuery();
+		PageInfo<SimCompany> pi = simcompanyService.querySimCompanyByPage(query);
+		System.err.println(JSONHelper.toString(pi));
+	}
+	
+	@Test
+	public void add(){
+		SimCompany model = new SimCompany();
+		model.setAdminType(1);
+		model.setFullName("和合汽车5子公司");
+		model.setShortName("和合5子公司");
+		model.setParentId(5);
+		ResultJson<Integer> rs = simcompanyService.addSimCompany(model);
+		System.err.println(JSONHelper.toString(rs));
+	}
+	
+	@Test
+	public void upd(){
+		SimCompany model = new SimCompany();
+		model.setAdminType(2);
+		model.setFullName("和合汽车5吱吱");
+		model.setShortName("和合5吱吱");
+		model.setId(7);
+		model.setParentId(6);
+		ResultJson<Integer> rs = simcompanyService.updSimCompany(model);
+		System.err.println(JSONHelper.toString(rs));
+		
+	}
+	
+	@Test
+	public void del(){
+		ResultJson<Integer> rs = simcompanyService.delSimCompany(2);
+		System.err.println(JSONHelper.toString(rs));
+	}
+	
+	@Test
+	public void qbyid(){
+		SimCompany model = simcompanyService.queryById(5);
+		System.out.println(JSONHelper.toString(model));
+	}
+	
+	@Test
+	public void q(){
+		SimCompanyQuery query = new SimCompanyQuery();
+		query.setFullName("和合");
+		List<SimCompany> l = simcompanyService.querySimCompany(query);
+		System.err.println(JSONHelper.toString(l));
+	}
+}

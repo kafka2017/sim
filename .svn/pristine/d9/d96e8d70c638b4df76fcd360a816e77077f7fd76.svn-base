@@ -1,0 +1,213 @@
+package com.amwell.model.simcompany;
+
+import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import io.swagger.annotations.ApiModelProperty;
+import net.sf.oval.constraint.NotEmpty;
+import net.sf.oval.constraint.NotNull;
+
+@Entity
+@Table(name="sim_company")
+public class SimCompany {
+
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Integer id;
+	
+	@NotNull(message="公司全称不能为空")
+	@NotEmpty(message="公司全称不能为空")
+	@Column(name="fullName",length=100)
+	private String fullName;//公司全称
+	
+	@NotNull(message="公司简称不能为空")
+	@NotEmpty(message="公司简称不能为空")
+	@Column(name="shortName",length=100)
+	@ApiModelProperty(value="公司简称")
+	private String shortName;//公司简称
+	
+	@NotNull(message="管理员类型不能为空")
+	@NotEmpty(message="管理员类型不能为空")
+	@Column(name="adminType")
+	private Integer adminType;//管理员类型 0:总公司类型，可访问所有子公司数据 1:分公司类型，只能访问其下的公司数据
+	
+	@Column(name="createTime")
+	private Date createTime;//创建时间
+	
+	@Column(name="createTime_s",insertable=false,updatable=false)
+	private String createTime_s;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="lastUpdateTime",nullable = false,length=10)
+	private Date lastUpdateTime;//最后更新时间
+	
+	@Column(name="lastUpdateTime_s",insertable=false,updatable=false)
+	private String lastUpdateTime_s;
+	
+	@NotNull(message="父级id不能为空")
+	@NotEmpty(message="父级id不能为空")
+	@Column(name="parentId")
+	private Integer parentId;//父级id
+	
+	@NotNull(message="有效状态flag不能为空")
+	@NotEmpty(message="有效状态flag不能为空")
+	@Column(name="flag")
+	private Integer flag;//有效状态 1 有效  0 无效
+	
+	@Column(name="userid",insertable=false,updatable=false)
+	private Integer userid;//账户id
+	
+	@Column(name="username",insertable=false,updatable=false)
+	private String username;//账号
+	
+	@Column(name="password",insertable=false,updatable=false)
+	private String password;//密码
+	
+	@Column(name="realname",insertable=false,updatable=false)
+	private String realname;//真实姓名
+	
+	@Column(name="parentName",insertable=false,updatable=false)
+	private String parentName;//
+ 	
+	@Column(name="version")
+	private Long version;//乐观锁控制,版本号，每次修改后，此版本号加1
+	
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getFullName() {
+		return fullName;
+	}
+
+	public void setFullName(String fullName) {
+		this.fullName = fullName;
+	}
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
+	}
+
+
+	public Integer getAdminType() {
+		return adminType;
+	}
+
+	public void setAdminType(Integer adminType) {
+		this.adminType = adminType;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getLastUpdateTime() {
+		return lastUpdateTime;
+	}
+
+	public void setLastUpdateTime(Date lastUpdateTime) {
+		this.lastUpdateTime = lastUpdateTime;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
+	}
+
+	public Integer getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Integer parentId) {
+		this.parentId = parentId;
+	}
+
+	public Integer getFlag() {
+		return flag;
+	}
+
+	public void setFlag(Integer flag) {
+		this.flag = flag;
+	}
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public String getRealname() {
+		return realname;
+	}
+
+	public void setRealname(String realname) {
+		this.realname = realname;
+	}
+
+	public Integer getUserid() {
+		return userid;
+	}
+
+	public void setUserid(Integer userid) {
+		this.userid = userid;
+	}
+
+	public String getCreateTime_s() {
+		return createTime_s;
+	}
+
+	public void setCreateTime_s(String createTime_s) {
+		this.createTime_s = createTime_s;
+	}
+
+	public String getLastUpdateTime_s() {
+		return lastUpdateTime_s;
+	}
+
+	public void setLastUpdateTime_s(String lastUpdateTime_s) {
+		this.lastUpdateTime_s = lastUpdateTime_s;
+	}
+
+	public String getParentName() {
+		return parentName;
+	}
+
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
+	}
+	
+}

@@ -1,0 +1,118 @@
+package com.amwell.controller.simcompany;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.amwell.model.User;
+import com.amwell.model.simcompany.SimCompany;
+import com.amwell.model.simcompany.SimCompanyQuery;
+import com.amwell.service.simcompany.SimCompanyService;
+import com.amwell.util.ResultJson;
+import com.github.pagehelper.PageInfo;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
+
+/**
+ * 分公司账户
+ * @author 番茄很忙
+ *
+ */
+@RestController
+@RequestMapping("/simcompany")
+public class SimCompanyController {
+	
+	@Autowired
+	private SimCompanyService simcompanyService;
+
+	/**
+	 * 分页查询
+	 * @param query
+	 * @return
+	 */
+	@ApiOperation(value="分公司账户分页查询", notes="根据SimCompanyQuery对象查询分公司账户")
+    @ApiImplicitParam(name = "SimCompanyQuery", value = "分页查询条件", required = false, dataType = "SimCompanyQuery")
+	@RequestMapping(value="/queryByPage")
+	public PageInfo<SimCompany> queryByPage(SimCompanyQuery query){
+		
+		Session session = SecurityUtils.getSubject().getSession();
+		
+		User user = (User)session.getAttribute("userSession");
+		
+		if(user==null){
+			return new PageInfo<SimCompany>();
+		}
+		
+		query.setUserid(user.getId());
+		
+		return simcompanyService.querySimCompanyByPage(query);
+	}
+	
+	/**
+	 * 添加
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/addSimCompany",method=RequestMethod.POST)
+	public ResultJson<Integer> addSimCompany(SimCompany model){
+		return simcompanyService.addSimCompany(model);
+	}
+	
+	/**
+	 * 修改
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/updSimCompany",method=RequestMethod.POST)
+	public ResultJson<Integer> updSimCompany(SimCompany model){
+		return simcompanyService.updSimCompany(model);
+	}
+	
+	/**
+	 * 获取单条
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="/queryById")
+	public SimCompany queryById(Integer id){
+		return simcompanyService.queryById(id);
+	}
+	
+	/**
+	 * 删除
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value="/delSimCompany")
+	public ResultJson<Integer> delSimCompany(Integer id){
+		return simcompanyService.delSimCompany(id);
+	}
+	
+	/**
+	 * 查询
+	 * @param query
+	 * @return
+	 */
+	@RequestMapping(value="/querySimCompany")
+	public List<SimCompany> querySimCompany(SimCompanyQuery query){
+		Session session = SecurityUtils.getSubject().getSession();
+		
+		User user = (User)session.getAttribute("userSession");
+		
+		if(user==null){
+			return new ArrayList<SimCompany>();
+		}
+		query.setUserid(user.getId());
+		
+		return simcompanyService.querySimCompany(query);
+	}
+	
+	
+}

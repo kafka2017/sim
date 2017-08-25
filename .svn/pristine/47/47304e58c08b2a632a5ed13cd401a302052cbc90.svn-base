@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amwell.mapper.simcompany.SimCompanyMapper">
+
+    <resultMap id="BaseResultMap" type="com.amwell.model.simcompany.SimCompany">
+	    <id column="id" jdbcType="INTEGER" property="id" />
+	    <id column="fullName" jdbcType="VARCHAR" property="fullName" />
+	    <id column="shortName" jdbcType="VARCHAR" property="shortName" />
+	    <id column="adminLoginName" jdbcType="VARCHAR" property="adminLoginName" />
+	    <id column="adminPassword" jdbcType="VARCHAR" property="adminPassword" />
+	    <id column="adminRealName" jdbcType="VARCHAR" property="adminRealName" />
+	    <id column="activeState" jdbcType="INTEGER" property="activeState" />
+	    <id column="adminType" jdbcType="INTEGER" property="adminType" />
+	    <id column="createTime" jdbcType="DATE" property="createTime" />
+	    <id column="lastUpdateTime" jdbcType="DATE" property="lastUpdateTime" />
+	    <id column="version" jdbcType="BIGINT" property="version" />
+  </resultMap>
+  
+  <select id="isExisten"  resultType="Integer" >
+  		select COUNT(1) from sim_company
+  		<where>
+	  		<choose>
+	  			<when test="col == 'fullName'">
+	  				and fullName = #{val}
+	  			</when>
+	  			<when test="col == 'shortName'">
+	  				and shortName = #{val}
+	  			</when>
+	  			<when test="col == 'adminLoginName'">
+	  				and adminLoginName = #{val}
+	  			</when>
+	  			<otherwise>
+	  				and 1=2
+	  			</otherwise>
+	  		</choose>
+	  		<if test="id != null">
+	  			and id != #{id}
+	  		</if>
+  		</where>
+  </select>
+  
+</mapper>

@@ -1,0 +1,13 @@
+package com.amwell.service.simsendrecord;
+
+import com.amwell.model.simsendrecord.SimSendRecord;
+import com.amwell.service.IService;
+
+/**
+ * 短信发送接口
+ * @author 番茄很忙
+ *
+ */
+public interface SimSendRecordService extends IService<SimSendRecord> {
+
+}

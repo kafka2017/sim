@@ -1,0 +1,247 @@
+package com.amwell.controller;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.LockedAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.amwell.model.User;
+import com.amwell.model.report.SimWaring;
+import com.amwell.model.simcompany.SimCompanyQuery;
+import com.amwell.model.simcompany.SimCompanyReport;
+import com.amwell.model.simsendrecord.SimSendRecordCount;
+import com.amwell.model.simsendrecord.SimSendRecordQuery;
+import com.amwell.service.report.ReportService;
+import com.amwell.util.ImageCode;
+import com.amwell.util.JSONHelper;
+import com.amwell.util.ResultJson;
+import com.amwell.util.StatusCode;
+
+
+@Controller
+public class HomeController {
+	
+	@Autowired
+	private ReportService reportService;
+	
+	
+	@RequestMapping(value = "/login", method = RequestMethod.GET)
+	public String login() {
+		return "login";
+	}
+
+	/**
+	 * 登录
+	 * @param request
+	 * @param user
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value = "/login", method = RequestMethod.POST, produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public ResultJson<Integer> login(HttpServletRequest request,User user) {
+		//response.addHeader("Access-Control-Allow-Origin","*") ;
+		System.err.println(JSONHelper.toString(user));
+		//验证码
+		ResultJson<Integer> rs = checkLoginImage(request);
+		
+		if(rs.getCode()==StatusCode.LOGIN_CODE){
+			return rs;
+		}
+		
+		if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
+			request.setAttribute("msg", "用户名或密码不能为空！");
+			return ResultJson.buildFailedMsg(-1, "用户名或密码不能为空！");
+		}
+		Subject subject = SecurityUtils.getSubject();
+		UsernamePasswordToken token = new UsernamePasswordToken(user.getUsername(), user.getPassword());
+		try {
+			subject.login(token);
+			return ResultJson.buildSuccessMsg(null,1, "登录成功");
+		} catch (LockedAccountException lae) {
+			token.clear();
+			request.setAttribute("msg", "用户已经被锁定不能登录，请与管理员联系！");
+			return ResultJson.buildFailedMsg(-2, "用户已经被锁定不能登录，请与管理员联系！");
+		} catch (AuthenticationException e) {
+			token.clear();
+			request.setAttribute("msg", "用户或密码不正确！");
+			return ResultJson.buildFailedMsg(0, "用户或密码不正确！");
+		}
+	}
+	
+	/**
+	 * 登录图片验证码
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/login/imagecode")
+	public String imagecode(Integer wImg,Integer hImg,HttpServletRequest request, HttpServletResponse response) throws Exception {
+		 
+		 if(wImg==null){
+			 wImg = 60;
+		 }
+		 if(hImg==null){
+			 hImg = 20;
+		 }
+		 
+		 OutputStream os = response.getOutputStream();
+		 Map<String,Object> map = ImageCode.getImageCode(wImg, hImg, os);
+		 String simpleCaptcha = "simpleCaptcha";
+		 request.getSession().setAttribute(simpleCaptcha, map.get("strEnsure").toString().toLowerCase());
+		 request.getSession().setAttribute("codeTime",new Date().getTime());
+		 try {
+			 
+		    ImageIO.write((BufferedImage) map.get("image"), "JPEG", os);
+		    
+		 } catch (IOException e) {
+		    return "";
+		 }
+		 return null;
+	}
+	
+	/**
+	 * 验证登录验证码
+	 * @param request
+	 * @return
+	 */
+	private ResultJson<Integer> checkLoginImage(HttpServletRequest request){
+		String checkCode = request.getParameter("checkCode");
+		HttpSession session = request.getSession();
+		Object cko = session.getAttribute("simpleCaptcha") ; //验证码对象
+		 if(cko == null){
+		   return ResultJson.buildFailedMsg(StatusCode.LOGIN_CODE, "验证码已失效，请重新输入！");
+		 }
+		 String captcha = cko.toString();
+		 Date now = new Date();
+		 Long codeTime = Long.valueOf(session.getAttribute("codeTime")+"");
+		 if(checkCode!=null){
+			 checkCode = checkCode.toUpperCase();
+		 }
+		 if(StringUtils.isEmpty(checkCode) || captcha == null || !(checkCode.equalsIgnoreCase(captcha))) {
+		   return ResultJson.buildFailedMsg(StatusCode.LOGIN_CODE, "验证码错误！");
+		 } else if ((now.getTime()-codeTime)/1000/60>5) {
+		  //验证码有效时长为5分钟
+		   return ResultJson.buildFailedMsg(StatusCode.LOGIN_CODE, "验证码已失效，请重新输入！");
+		 }else {
+		   session.removeAttribute("simpleCaptcha");
+		   return ResultJson.buildFailedMsg(StatusCode.SUCCESS, "验证通过");
+		 }
+	}
+	
+	
+	
+	/**
+	 * sim卡状态统计
+	 * @param query
+	 * @return
+	 */
+	@RequestMapping(value = "/simStatusReport", produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public ResultJson<SimCompanyReport> simStatusReport(SimCompanyQuery query){
+		Session session = SecurityUtils.getSubject().getSession();
+		User user = (User)session.getAttribute("userSession");
+		if(user==null){
+			return ResultJson.buildFailedMsg(StatusCode.LOGIN_OUT, "登录超时");
+		}
+		query.setUserid(user.getId());
+		List<SimCompanyReport> list = reportService.simStatusReport(query);
+		SimCompanyReport sr = new SimCompanyReport();
+		if(list!=null && list.size()>0){
+			sr = list.get(0);
+			return ResultJson.buildSuccessMsg(sr, StatusCode.SUCCESS, "查询成功");
+		}
+		
+		return ResultJson.buildFailedMsg(sr, StatusCode.EXCEPTION, "无数据");
+	}
+	
+	/**
+	 * sim卡流量阈值统计
+	 * @param query
+	 * @return
+	 */
+	@RequestMapping(value = "/simWaringReport", produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public ResultJson<SimWaring> simWaringReport(SimCompanyQuery query){
+		Session session = SecurityUtils.getSubject().getSession();
+		User user = (User)session.getAttribute("userSession");
+		if(user==null){
+			return ResultJson.buildFailedMsg(StatusCode.LOGIN_OUT, "登录超时");
+		}
+		query.setUserid(user.getId());
+		List<SimWaring> list = reportService.simWaringReport(query);
+		SimWaring s = new SimWaring();
+		if(list!=null && list.size()>0){
+			 s = list.get(0);
+			return ResultJson.buildSuccessMsg(s, StatusCode.SUCCESS, "查询成功");
+		}
+		
+		return ResultJson.buildFailedMsg(s,StatusCode.EXCEPTION, "无数据");
+	}
+	
+	/**
+	 * 短信发送阈值统计
+	 * @param query
+	 * @return
+	 */
+	@RequestMapping(value = "/simMessageRecord", produces = "application/json;charset=utf-8")
+	@ResponseBody
+	public ResultJson<SimSendRecordCount> simMessageRecord(SimSendRecordQuery query){
+		Session session = SecurityUtils.getSubject().getSession();
+		User user = (User)session.getAttribute("userSession");
+		if(user==null){
+			return ResultJson.buildFailedMsg(StatusCode.LOGIN_OUT, "登录超时");
+		}
+		query.setCompanyId(user.getSimcompanyId());
+		
+		SimSendRecordCount sim = reportService.simMessageRecord(query);
+		
+		if(sim==null){
+			sim = new SimSendRecordCount();
+		}
+		
+		return ResultJson.buildSuccessMsg(sim, StatusCode.SUCCESS, "查询成功");
+	}
+	
+
+	@RequestMapping(value = { "/usersPage", "" })
+	public String usersPage() {
+		return "user/users";
+	}
+
+	@RequestMapping("/rolesPage")
+	public String rolesPage() {
+		return "role/roles";
+	}
+
+	@RequestMapping("/resourcesPage")
+	public String resourcesPage() {
+		return "resources/resources";
+	}
+
+	@RequestMapping("/403")
+	public String forbidden() {
+		return "403";
+	}
+}

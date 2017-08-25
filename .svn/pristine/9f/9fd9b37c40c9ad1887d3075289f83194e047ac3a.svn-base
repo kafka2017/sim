@@ -1,0 +1,104 @@
+package com.amwell.model.simcompany;
+
+public class SimCompanyReport {
+
+	//id
+	private Integer id;
+	
+	//公司名称
+	private String shortName;
+	
+	//父id
+	private Integer parentId;
+	
+	//启
+	private Integer countEnable;
+	
+	//未知
+	private Integer countUnknown;
+	
+	//停
+	private Integer countDisable;
+	
+	//待激活
+	private Integer countSilence;
+	
+	//警
+	private Integer countWarn;
+	
+	//超
+	private Integer countExceed;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
+	}
+
+	public Integer getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Integer parentId) {
+		this.parentId = parentId;
+	}
+
+	public Integer getCountEnable() {
+		return countEnable;
+	}
+
+	public void setCountEnable(Integer countEnable) {
+		this.countEnable = countEnable;
+	}
+
+	public Integer getCountUnknown() {
+		return countUnknown;
+	}
+
+	public void setCountUnknown(Integer countUnknown) {
+		this.countUnknown = countUnknown;
+	}
+
+	public Integer getCountDisable() {
+		return countDisable;
+	}
+
+	public void setCountDisable(Integer countDisable) {
+		this.countDisable = countDisable;
+	}
+
+	public Integer getCountSilence() {
+		return countSilence;
+	}
+
+	public void setCountSilence(Integer countSilence) {
+		this.countSilence = countSilence;
+	}
+
+	public Integer getCountWarn() {
+		return countWarn;
+	}
+
+	public void setCountWarn(Integer countWarn) {
+		this.countWarn = countWarn;
+	}
+
+	public Integer getCountExceed() {
+		return countExceed;
+	}
+
+	public void setCountExceed(Integer countExceed) {
+		this.countExceed = countExceed;
+	}
+	
+}

@@ -1,0 +1,21 @@
+package com.amwell.job;
+
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
+
+import com.amwell.util.DateHelper;
+
+/**
+ * 从翼卡数据接口拉取数据作业类
+ * 
+ * @author hxj
+ *
+ */
+@Component
+public class PullSIMDataJob {
+
+	@Scheduled(cron="*/5 * * * * *")
+	public void execute() {
+		System.out.println(Thread.currentThread().getId()+" execute at:"+DateHelper.getNowDateTimeStr());
+	}
+}

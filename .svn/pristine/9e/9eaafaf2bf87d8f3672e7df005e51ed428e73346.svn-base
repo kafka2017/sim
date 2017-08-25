@@ -1,0 +1,123 @@
+package com.amwell.service.impl.simsendrecord;
+
+import java.text.NumberFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amwell.common.ErrorCodeEnum;
+import com.amwell.config.AmwellSetConfig;
+import com.amwell.ecar.service.ECarInterfaceService;
+import com.amwell.ecar.vo.result.ECarSendMsgWrapperResult;
+import com.amwell.mapper.simsendrecord.SimSendRecordMapper;
+import com.amwell.model.simsendrecord.SimSendRecord;
+import com.amwell.model.simsendrecord.SimSendRecordIccidCount;
+import com.amwell.model.simsendrecord.SimSendRecordQuery;
+import com.amwell.model.simwaringset.SimMessageSet;
+import com.amwell.service.impl.BaseService;
+import com.amwell.service.simsendrecord.SimSendRecordService;
+import com.amwell.service.simwaringset.SimMessageSetService;
+import com.amwell.util.DateHelper;
+import com.amwell.util.ResultJson;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+
+import net.sf.oval.ConstraintViolation;
+import net.sf.oval.Validator;
+
+@Service(value="simsendrecordService")
+public class SimSendRecordServiceImpl extends BaseService<SimSendRecord> implements SimSendRecordService {
+
+	@Autowired
+	ECarInterfaceService ecarService;
+	
+	@Resource
+	SimSendRecordMapper simsendrecordmapper;
+	
+	@Autowired
+	SimMessageSetService simMessageSetService;
+	
+	@Autowired
+	AmwellSetConfig amwellconfig;
+	
+	@Override
+	public ResultJson<Integer> sendMessage(SimSendRecord model) {
+		
+		//验证
+		Validator validator = new Validator(); 
+	    List<ConstraintViolation> ret = validator.validate(model);
+		if(!ret.isEmpty()){
+			return ResultJson.buildFailedMsg(ErrorCodeEnum.illegal_para.getErrorCode(), ret.get(0).getMessage());
+		}
+		
+		try {
+			//发送短信接口
+			ECarSendMsgWrapperResult result = ecarService.sendMsg(model.getIccid(), model.getContent());
+			
+			//保存发送记录
+			Integer sendStatus=0;
+			if(result.getSuccess().equals("true")){
+				sendStatus = 1;
+				model.setSendNum(result.getData()[0]);
+			}
+			
+			model.setSendStatus(sendStatus);
+			model.setCreateOn(DateHelper.getDateTimeStr(new Date()));
+			
+			Integer i = super.save(model);
+			
+			if(sendStatus==1){
+				return ResultJson.buildSuccessMsg(null, ErrorCodeEnum.op_success.getErrorCode(), ErrorCodeEnum.op_success.getErrorMsg());
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+		
+	    return ResultJson.buildFailedMsg(null, ErrorCodeEnum.illegal_para.getErrorCode(), ErrorCodeEnum.illegal_para.getErrorMsg());
+	}
+
+	@Override
+	public PageInfo<SimSendRecord> queryByPage(SimSendRecordQuery query) {
+		PageHelper.startPage(query.getPageNum(), query.getPageSize());
+        List<SimSendRecord> simSendRecordlist = simsendrecordmapper.querySimSendRecord(query);
+        return new PageInfo<>(simSendRecordlist);
+	}
+
+	@Override
+	public SimSendRecordIccidCount queryById(String iccid,Integer companyId) {
+		SimSendRecordQuery query = new SimSendRecordQuery();
+		query.setIccid(iccid);
+		List<SimSendRecordIccidCount> l = simsendrecordmapper.queryByiccid(query);
+		if(l!=null && l.size()>0){
+			
+			SimSendRecordIccidCount src = l.get(0);
+			
+			//获取公司设置的短信限制数，如果没设置，就使用系统默认的短信总数
+			SimMessageSet sset = simMessageSetService.querySimMessageSet(companyId);
+			
+			Integer messageTotal = amwellconfig.getMessageTotal();//短信限制总数
+			if(sset!=null){
+				messageTotal = sset.getMessageTotal();
+			}
+			
+			Integer msgCount = src.getMsgCount();
+			msgCount=msgCount>messageTotal?messageTotal:msgCount;
+			String msgRate = NumberFormat.getInstance().format((float)msgCount/(float)messageTotal*100);
+			src.setMsgRate(msgRate);
+			return src;
+		}
+		return new SimSendRecordIccidCount();
+	}
+
+	@Override
+	public List<SimSendRecordIccidCount> querySendIccidCount(SimSendRecordQuery query) {
+		return simsendrecordmapper.queryByiccid(query);
+	}
+
+
+}

@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amwell.mapper.simbaseInfo.SimBaseInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.amwell.model.simbaseInfo.SimBaseInfo">
+	    <id column="id" jdbcType="BIGINT" property="id" />
+	    <id column="msisdn" jdbcType="VARCHAR" property="msisdn" />
+	    <id column="iccid" jdbcType="VARCHAR" property="iccid" />
+	    <id column="serviceStartDate" jdbcType="VARCHAR" property="serviceStartDate" />
+	    <id column="serviceEndDate" jdbcType="DATE" property="serviceEndDate" />
+	    <id column="registTime" jdbcType="DATE" property="registTime" />
+	    <id column="distributeTime" jdbcType="DATE" property="distributeTime" />
+	    <id column="activationTime" jdbcType="DATE" property="activationTime" />
+	    <id column="flowCycle" jdbcType="INTEGER" property="flowCycle" />
+	    <id column="totalFlow" jdbcType="DOUBLE" property="totalFlow" />
+	    <id column="usedFlow" jdbcType="DOUBLE" property="usedFlow" />
+	    <id column="gprsStatus" jdbcType="VARCHAR" property="gprsStatus" />
+	    <id column="deviceStatus" jdbcType="VARCHAR" property="deviceStatus" />
+	    <id column="carState" jdbcType="VARCHAR" property="carState" />
+	    <id column="createTime" jdbcType="DATE" property="createTime" />
+	    <id column="lastUpdateTime" jdbcType="DATE" property="lastUpdateTime" />
+	    <id column="companyId" jdbcType="INTEGER" property="companyId" />
+	    <id column="remark" jdbcType="VARCHAR" property="remark" />
+	    <id column="version" jdbcType="BIGINT" property="version" />
+  </resultMap>
+  
+  <select id="isExisten"  resultType="Integer" >
+  		select COUNT(1) from sim_base_info
+  		<where>
+	  		<choose>
+	  			<when test="col == 'msisdn'">
+	  				and msisdn = #{val}
+	  			</when>
+	  			<when test="col == 'iccid'">
+	  				and iccid = #{val}
+	  			</when>
+	  			<otherwise>
+	  				and 1=2
+	  			</otherwise>
+	  		</choose>
+	  		<if test="id != null">
+	  			and id != #{id}
+	  		</if>
+  		</where>
+  </select>
+  
+  <select id="querySimBaseInfo" parameterType="com.amwell.model.simbaseInfo.SimBaseInfoQuery" resultType="com.amwell.model.simbaseInfo.SimBaseInfo">
+  		SELECT a.id,DATE_FORMAT(a.activationTime,'%Y-%m-%d %H:%i') as activationTime,a.companyId,
+			 DATE_FORMAT(a.createTime,'%Y-%m-%d')as createTime,a.deviceStatus,DATE_FORMAT(a.distributeTime,'%Y-%m-%d %H:%i') as distributeTime,
+			 a.flowCycle,a.gprsStatus,a.iccid,DATE_FORMAT(a.lastUpdateTime,'%Y-%m-%d')as lastUpdateTime,
+			 a.msisdn,DATE_FORMAT(a.registTime,'%Y-%m-%d %H:%i')as registTime,
+				a.remark,DATE_FORMAT(a.serviceEndDate,'%Y-%m-%d %H:%i')as serviceEndDate,
+				DATE_FORMAT(a.serviceStartDate,'%Y-%m-%d %H:%i')as serviceStartDate,
+				a.totalFlow,a.usedFlow,a.version,
+				b.fullName,b.shortName
+		from sim_base_info a 
+		left join sim_company b on a.companyId = b.id
+		<include refid="qw"></include>
+  </select>
+  
+  <select id="queryById" parameterType="long" resultType="com.amwell.model.simbaseInfo.SimBaseInfo">
+  		SELECT a.id,DATE_FORMAT(a.activationTime,'%Y-%m-%d %H:%i') as activationTime,a.companyId,
+			 DATE_FORMAT(a.createTime,'%Y-%m-%d')as createTime,a.deviceStatus,DATE_FORMAT(a.distributeTime,'%Y-%m-%d %H:%i') as distributeTime,
+			 a.flowCycle,a.gprsStatus,a.iccid,DATE_FORMAT(a.lastUpdateTime,'%Y-%m-%d')as lastUpdateTime,
+			 a.msisdn,DATE_FORMAT(a.registTime,'%Y-%m-%d %H:%i')as registTime,
+				a.remark,DATE_FORMAT(a.serviceEndDate,'%Y-%m-%d %H:%i')as serviceEndDate,
+				DATE_FORMAT(a.serviceStartDate,'%Y-%m-%d %H:%i')as serviceStartDate,
+				a.totalFlow,a.usedFlow,a.version,
+				b.fullName,b.shortName
+		from sim_base_info a 
+		left join sim_company b on a.companyId = b.id
+		where a.id = #{id}
+  </select>
+  
+  <sql id="qw">
+  	<where>
+  		<if test="companyId!=null">
+  			and a.companyId = #{companyId}
+  		</if>
+  		<if test="msisdn!=null">
+  			and a.msisdn like concat('%',#{msisdn},'%')
+  		</if>
+  		<if test="iccid!=null">
+  			and a.iccid like concat('%',#{iccid},'%')
+  		</if>
+  	</where>
+  </sql>
+  
+  <update id="updSimBaseInfoLock" parameterType="com.amwell.model.simbaseInfo.SimBaseInfo">
+  	  update sim_base_info
+  	  <trim prefix="set" suffixOverrides=",">
+  	  	<if test="msisdn!=null">
+  	  		msisdn = #{msisdn},
+  	  	</if>
+  	  	<if test="iccid!=null">
+  	  		iccid = #{iccid},
+  	  	</if>
+  	  	<if test="serviceStartDate!=null">
+  	  		serviceStartDate = #{serviceStartDate},
+  	  	</if>
+  	  	<if test="serviceEndDate!=null">
+  	  		serviceEndDate = #{serviceEndDate},
+  	  	</if>
+  	  	<if test="registTime!=null">
+  	  		registTime=#{registTime},
+  	  	</if>
+  	  	<if test="distributeTime!=null">
+  	  		distributeTime=#{distributeTime},
+  	  	</if>
+  	  	<if test="activationTime!=null">
+  	  		activationTime=#{activationTime},
+  	  	</if>
+  	  	<if test="flowCycle!=null">
+  	  		flowCycle = #{flowCycle},
+  	  	</if>
+  	  	<if test="totalFlow!=null">
+  	  		totalFlow = #{totalFlow},
+  	  	</if>
+  	  	<if test="usedFlow!=null">
+  	  		usedFlow = #{usedFlow},
+  	  	</if>
+  	  	
+  	  	<if test="gprsStatus!=null">
+  	  		gprsStatus = #{gprsStatus},
+  	  	</if>
+  	  	<if test="deviceStatus!=null">
+  	  		deviceStatus=#{deviceStatus},
+  	  	</if>
+  	  	<if test="lastUpdateTime!=null">
+  	  		lastUpdateTime=#{lastUpdateTime},
+  	  	</if>
+  	  	<if test="companyId!=null">
+  	  		companyId = #{companyId},
+  	  	</if>
+  	  	<if test="remark!=null">
+  	  		remark = #{remark},
+  	  	</if>
+  	  	<if test="version!=null">
+  	  		version = version + 1,
+  	  	</if>
+  	  </trim>
+  	  where id = #{id} and version = #{version}	
+  </update>
+  
+  <update id="allocationSimCar">
+  	  update sim_base_info set companyId=#{companyId} where id in 
+  	  <foreach collection="ids" index="index" item="item" separator="," open="(" close=")">
+        #{item}
+  	  </foreach>
+  </update>
+</mapper>

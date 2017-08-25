@@ -1,0 +1,9 @@
+package com.amwell.model.simbaseInfo;
+
+import com.amwell.model.BaseModel;
+
+public class SimBaseInfoQuery extends BaseModel{
+
+	
+	
+}

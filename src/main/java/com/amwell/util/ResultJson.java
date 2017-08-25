@@ -1,0 +1,105 @@
+package com.amwell.util;
+
+import java.io.Serializable;
+
+import com.amwell.common.ErrorCodeEnum;
+
+public class ResultJson<T> implements Serializable {
+
+	private static final long serialVersionUID = -5460134129938461241L;
+
+	private static final String STATUS_SUCCESS="ok";
+	
+	private static final String STATUS_ERROR="error";
+	
+	
+	/**
+	 * 状态码
+	 */
+	private Integer code;
+	/**
+	 * 状态字符串
+	 */
+	private String status;
+
+	/**
+	 * 对象
+	 */
+	private T obj;
+
+	/**
+	 * 信息描述
+	 */
+	private String msg;
+
+	/**
+	 * 
+	 * @param status
+	 * @param obj
+	 * @param msg
+	 */
+	private ResultJson(String status, T obj,Integer code, String msg) {
+		this.status = status;
+		this.obj = obj;
+		this.msg = msg;
+		this.code = code;
+	}
+
+	public static <T> ResultJson<T> buildSuccessMsg(T obj,Integer code, String msg) {
+		return new ResultJson<T>(STATUS_SUCCESS, obj,code, msg);
+	}
+	
+
+	public static <T> ResultJson<T> buildSuccessMsg(T obj) {
+		return new ResultJson<T>(STATUS_SUCCESS, obj,ErrorCodeEnum.op_success.getErrorCode(), ErrorCodeEnum.op_success.getErrorMsg());
+	}
+
+	public static <T> ResultJson<T> buildFailedMsg(Integer code, String msg) {
+		return new ResultJson<T>(STATUS_ERROR,null, code, msg);
+	}
+	
+	public static <T> ResultJson<T> buildFailedMsg(T obj,Integer code, String msg) {
+		return new ResultJson<T>(STATUS_ERROR,obj, code, msg);
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public T getObj() {
+		return obj;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public boolean isSuccess() {
+		return STATUS_SUCCESS.equals(this.getStatus());
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void setObj(T obj) {
+		this.obj = obj;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+
+	public Integer getCode() {
+		return code;
+	}
+
+	public void setCode(Integer code) {
+		this.code = code;
+	}
+	
+}

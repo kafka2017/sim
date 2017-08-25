@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.amwell.mapper.simbaseInfo.SimBaseInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.amwell.model.simbaseInfo.SimBaseInfo">
+	    <id column="id" jdbcType="BIGINT" property="id" />
+	    <id column="msisdn" jdbcType="VARCHAR" property="msisdn" />
+	    <id column="iccid" jdbcType="VARCHAR" property="iccid" />
+	    <id column="serviceStartDate" jdbcType="VARCHAR" property="serviceStartDate" />
+	    <id column="serviceEndDate" jdbcType="DATE" property="serviceEndDate" />
+	    <id column="registTime" jdbcType="DATE" property="registTime" />
+	    <id column="distributeTime" jdbcType="DATE" property="distributeTime" />
+	    <id column="activationTime" jdbcType="DATE" property="activationTime" />
+	    <id column="flowCycle" jdbcType="INTEGER" property="flowCycle" />
+	    <id column="totalFlow" jdbcType="DOUBLE" property="totalFlow" />
+	    <id column="usedFlow" jdbcType="DOUBLE" property="usedFlow" />
+	    <id column="gprsStatus" jdbcType="VARCHAR" property="gprsStatus" />
+	    <id column="deviceStatus" jdbcType="VARCHAR" property="deviceStatus" />
+	    <id column="cardState" jdbcType="VARCHAR" property="cardState" />
+	    <id column="createTime" jdbcType="VARCHAR" property="createTime" />
+	    <id column="lastUpdateTime" jdbcType="VARCHAR" property="lastUpdateTime" />
+	    <id column="companyId" jdbcType="INTEGER" property="companyId" />
+	    <id column="remark" jdbcType="VARCHAR" property="remark" />
+	    <id column="version" jdbcType="BIGINT" property="version" />
+	    <id column="simIccidCount" jdbcType="ARRAY" property="simIccidCount" />
+  </resultMap>
+  
+  <select id="isExisten"  resultType="Integer" >
+  		select COUNT(1) from sim_base_info
+  		<where>
+	  		<choose>
+	  			<when test="col == 'msisdn'">
+	  				and msisdn = #{val}
+	  			</when>
+	  			<when test="col == 'iccid'">
+	  				and iccid = #{val}
+	  			</when>
+	  			<otherwise>
+	  				and 1=2
+	  			</otherwise>
+	  		</choose>
+	  		<if test="id != null">
+	  			and id != #{id}
+	  		</if>
+  		</where>
+  </select>
+  
+  <select id="querySimBaseInfo" parameterType="com.amwell.model.simbaseInfo.SimBaseInfoQuery" resultType="com.amwell.model.simbaseInfo.SimBaseInfo">
+  		SELECT a.id,DATE_FORMAT(a.activationTime,'%Y-%m-%d %H:%i') as activationTime,a.companyId,
+			 DATE_FORMAT(a.createTime,'%Y-%m-%d %H:%i')as createTime,
+			 (case a.deviceStatus  
+			 	 when 0 then '关机' 
+				 when 1 then '开机'
+         when 2 then '未知'
+				else '' end) as deviceStatus,
+			 DATE_FORMAT(a.distributeTime,'%Y-%m-%d %H:%i') as distributeTime,
+			 a.flowCycle,
+				(case a.gprsStatus
+					when '00' then '离线'
+					when '01' then '在线'
+					when '02' then '未知'
+				else '' end) as gprsStatus,
+				(case a.cardState
+					when '00' then '正常'
+					when '01' then '未知'
+					when '02' then '停机'
+					when '03' then '销号'
+					when '07' then '待激活'
+					when 'Activated' then '已激活'
+				else '' end) as cardState,
+				a.iccid,
+			 DATE_FORMAT(a.lastUpdateTime,'%Y-%m-%d %H:%i')as lastUpdateTime,
+			 a.msisdn,DATE_FORMAT(a.registTime,'%Y-%m-%d %H:%i')as registTime,
+				a.remark,DATE_FORMAT(a.serviceEndDate,'%Y-%m-%d %H:%i')as serviceEndDate,
+				DATE_FORMAT(a.serviceStartDate,'%Y-%m-%d %H:%i')as serviceStartDate,
+				a.totalFlow,a.usedFlow,a.version,
+				b.fullName,b.shortName
+		from sim_base_info a 
+		left join sim_company b on a.companyId = b.id
+		<include refid="qw"></include>
+  </select>
+  
+  <select id="queryById" parameterType="long" resultType="com.amwell.model.simbaseInfo.SimBaseInfo">
+  		SELECT a.id,DATE_FORMAT(a.activationTime,'%Y-%m-%d %H:%i') as activationTime,a.companyId,
+			 DATE_FORMAT(a.createTime,'%Y-%m-%d %H:%i')as createTime,
+			 (case a.deviceStatus  
+			 	 when 0 then '关机' 
+				 when 1 then '开机'
+         when 2 then '未知'
+				else '' end) as deviceStatus,
+			 DATE_FORMAT(a.distributeTime,'%Y-%m-%d %H:%i') as distributeTime,
+			 a.flowCycle,
+				(case a.gprsStatus
+					when '00' then '离线'
+					when '01' then '在线'
+					when '02' then '未知'
+				else '' end) as gprsStatus,
+				(case a.cardState
+					when '00' then '正常'
+					when '01' then '未知'
+					when '02' then '停机'
+					when '03' then '销号'
+					when '07' then '待激活'
+					when 'Activated' then '已激活'
+				else '' end) as cardState,
+				a.iccid,
+			 DATE_FORMAT(a.lastUpdateTime,'%Y-%m-%d %H:%i')as lastUpdateTime,
+			 a.msisdn,DATE_FORMAT(a.registTime,'%Y-%m-%d %H:%i')as registTime,
+				a.remark,DATE_FORMAT(a.serviceEndDate,'%Y-%m-%d %H:%i')as serviceEndDate,
+				DATE_FORMAT(a.serviceStartDate,'%Y-%m-%d %H:%i')as serviceStartDate,
+				a.totalFlow,a.usedFlow,a.version,
+				b.fullName,b.shortName
+		from sim_base_info a 
+		left join sim_company b on a.companyId = b.id
+		where a.id = #{id}
+  </select>
+  
+  <sql id="qw">
+  	<where>
+  		<if test="companyId!=null">
+  			and
+			FIND_IN_SET(
+				a.companyId,
+				queryCompanyChildren(#{companyId})
+			)
+  		</if>
+  		<if test="msisdn!=null and msisdn!=''">
+  			and a.msisdn like concat('%',#{msisdn},'%')
+  		</if>
+  		<if test="shortName!=null and shortName!=''">
+  			and b.shortName like concat('%',#{shortName},'%')
+  		</if>
+  		<if test="iccid!=null and iccid!=''">
+  			and a.iccid like concat('%',#{iccid},'%')
+  		</if>
+  		<if test="beginDistributeTime!=null and beginDistributeTime!=''">
+  			and a.distributeTime <![CDATA[ >= ]]> #{beginDistributeTime}
+  		</if>
+  		<if test="endDistributeTime!=null and endDistributeTime!=''">
+  			and a.distributeTime <![CDATA[ <= ]]> #{endDistributeTime}
+  		</if>
+  		<if test="gprsStatus!=null and gprsStatus!=''">
+  			and a.gprsStatus=#{gprsStatus}
+  		</if>
+  		<if test="deviceStatus!=null and deviceStatus!=''">
+  			and a.deviceStatus = #{deviceStatus}
+  		</if>
+  		<if test="cardState!=null and cardState!=''">
+  			and a.cardState = #{cardState}
+  		</if>
+  		<if test="bindState!=null and bindState==1">
+  			and a.companyId is not null
+  		</if>
+  		<if test="bindState!=null and bindState==0">
+  			and a.companyId is null
+  		</if>
+		<if test="type!=null and type=='enable'">
+			and a.cardState = '00'
+		</if>
+		<if test="type!=null and type=='unknown'">
+			and a.cardState = '01'
+		</if>
+		<if test="type!=null and type=='disable'">
+			and a.cardState = '02'
+		</if>
+		<if test="type!=null and type=='cancel'">
+			and a.cardState = '03'
+		</if>
+		<if test="type!=null and type=='silence'">
+			and a.cardState = '07'
+		</if>
+		<if test="type!=null and type=='warn'">
+			and 0.8<![CDATA[ < ]]>a.usedFlow/a.totalFlow and a.usedFlow/a.totalFlow<![CDATA[ < ]]>1
+		</if> 
+		<if test="type!=null and type=='exceed'">
+			and (a.usedFlow/a.totalFlow)>1
+		</if> 
+		<if test="startIccid!=null and startIccid!=''">
+			and a.iccid <![CDATA[ >=  ]]> #{startIccid}
+		</if>
+		<if test="endIccid!=null and endIccid!=''">
+			and a.iccid <![CDATA[ <=  ]]> #{endIccid}
+		</if>
+		<if test="startMsisdn!=null and startMsisdn!=''">
+			and a.msisdn <![CDATA[ >=  ]]> #{startMsisdn}
+		</if>
+		<if test="endMsisdn!=null and endMsisdn!=''">
+			and a.msisdn <![CDATA[ <=  ]]> #{endMsisdn}
+		</if>
+				
+  	</where>
+  </sql>
+  
+  <update id="updSimBaseInfoLock" parameterType="com.amwell.model.simbaseInfo.SimBaseInfo">
+  	  update sim_base_info
+  	  <trim prefix="set" suffixOverrides=",">
+  	  	<if test="msisdn!=null">
+  	  		msisdn = #{msisdn},
+  	  	</if>
+  	  	<if test="iccid!=null">
+  	  		iccid = #{iccid},
+  	  	</if>
+  	  	<if test="serviceStartDate!=null">
+  	  		serviceStartDate = #{serviceStartDate},
+  	  	</if>
+  	  	<if test="serviceEndDate!=null">
+  	  		serviceEndDate = #{serviceEndDate},
+  	  	</if>
+  	  	<if test="registTime!=null">
+  	  		registTime=#{registTime},
+  	  	</if>
+  	  	<if test="distributeTime!=null">
+  	  		distributeTime=#{distributeTime},
+  	  	</if>
+  	  	<if test="activationTime!=null">
+  	  		activationTime=#{activationTime},
+  	  	</if>
+  	  	<if test="flowCycle!=null">
+  	  		flowCycle = #{flowCycle},
+  	  	</if>
+  	  	<if test="totalFlow!=null">
+  	  		totalFlow = #{totalFlow},
+  	  	</if>
+  	  	<if test="usedFlow!=null">
+  	  		usedFlow = #{usedFlow},
+  	  	</if>
+  	  	
+  	  	<if test="gprsStatus!=null">
+  	  		gprsStatus = #{gprsStatus},
+  	  	</if>
+  	  	<if test="deviceStatus!=null">
+  	  		deviceStatus=#{deviceStatus},
+  	  	</if>
+  	  	<if test="lastUpdateTime!=null">
+  	  		lastUpdateTime=#{lastUpdateTime},
+  	  	</if>
+  	  	<if test="companyId!=null">
+  	  		companyId = #{companyId},
+  	  	</if>
+  	  	<if test="remark!=null">
+  	  		remark = #{remark},
+  	  	</if>
+  	  	<if test="version!=null">
+  	  		version = version + 1,
+  	  	</if>
+  	  </trim>
+  	  where id = #{id} and version = #{version}	
+  </update>
+  
+  <!-- 关联公司与SIM卡 -->
+  <update id="allocationSimCar">
+  	  update sim_base_info set companyId=#{companyId},version=version+1,lastUpdateTime=now() where id in 
+  	  <foreach collection="ids" index="index" item="item" separator="," open="(" close=")">
+        #{item}
+  	  </foreach>
+  </update>
+  
+  <update id="updSimBaseInfoByiccid">
+  	update sim_base_info set deviceStatus=#{deviceStatus},version=version+1,lastUpdateTime=now() where iccid=#{iccid}
+  </update>
+  
+  <update id="updSimBaseInfoGprsStateByiccid">
+  	update sim_base_info set gprsStatus=#{gprsStatus},version=version+1,lastUpdateTime=now() where iccid=#{iccid}
+  </update>
+  
+  <update id="allocationSim">
+  		update sim_base_info set companyId =#{companyId},lastUpdateTime=NOW(),version = version+1
+  		where 1=1 
+  		<if test="startIccid!=null and startIccid!=''">
+  			and iccid <![CDATA[ >= ]]> #{startIccid}
+  		</if>
+  		<if test="endIccid!=null and endIccid!=''">
+  			and iccid <![CDATA[ <= ]]> #{endIccid}
+  		</if>
+  		<if test="startMsisdn!=null and startMsisdn!=''">
+			and msisdn <![CDATA[ >= ]]> #{startMsisdn}
+		</if>
+		<if test="endMsisdn!=null and endMsisdn!=''">
+			and msisdn <![CDATA[ <= ]]> #{endMsisdn}
+		</if>
+  </update>
+  
+</mapper>

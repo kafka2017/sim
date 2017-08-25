@@ -1,0 +1,31 @@
+package com.amwell.service.impl.report;
+
+import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+
+import com.amwell.mapper.report.SimCompanyReportMapper;
+import com.amwell.model.report.SimWaring;
+import com.amwell.model.simcompany.SimCompanyQuery;
+import com.amwell.model.simcompany.SimCompanyReport;
+import com.amwell.service.report.ReportService;
+
+@Service(value="reportService")
+public class ReportServiceImpl  implements ReportService {
+
+	@Resource
+	private SimCompanyReportMapper simcompanyReportMapper;
+
+	@Override
+	public List<SimCompanyReport> simStatusReport(SimCompanyQuery query) {
+		return simcompanyReportMapper.simStatusReport(query);
+	}
+
+	@Override
+	public List<SimWaring> simWaringReport(SimCompanyQuery query) {
+		return simcompanyReportMapper.simWaringReport(query);
+	}
+
+}

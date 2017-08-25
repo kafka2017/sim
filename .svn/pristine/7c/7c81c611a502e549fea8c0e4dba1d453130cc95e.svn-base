@@ -1,0 +1,59 @@
+package com.amwell.service.simcompany;
+
+import java.util.List;
+
+import com.amwell.model.simcompany.SimCompany;
+import com.amwell.model.simcompany.SimCompanyQuery;
+import com.amwell.service.IService;
+import com.amwell.util.ResultJson;
+import com.github.pagehelper.PageInfo;
+
+/**
+ * 分公司账户
+ * @author 番茄很忙
+ *
+ */
+public interface SimCompanyService extends IService<SimCompany> {
+
+	/**
+	 * 分页查询
+	 * @param query
+	 * @return
+	 */
+	public PageInfo<SimCompany> querySimCompanyByPage(SimCompanyQuery query);
+	
+	/**
+	 * 不分页查询
+	 * @param query
+	 * @return
+	 */
+	public List<SimCompany> querySimCompany(SimCompanyQuery query);
+	
+	/**
+	 * 添加
+	 * @param model
+	 * @return
+	 */
+	public ResultJson<Integer> addSimCompany(SimCompany model);
+	
+	/**
+	 * 更新
+	 * @param model
+	 * @return
+	 */
+	public ResultJson<Integer> updSimCompany(SimCompany model);
+	
+	/**
+	 * 查询单条
+	 * @param id
+	 * @return
+	 */
+	public SimCompany queryById(Integer id);
+	
+	/**
+	 * 删除
+	 * @param id
+	 * @return
+	 */
+	public ResultJson<Integer> delSimCompany(Integer id);
+}
