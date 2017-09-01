@@ -6,7 +6,7 @@ public enum ErrorCodeEnum {
 	illegal_para(1000, "非法参数"),
 	not_exist(1001, "数据不存在"),
 	login_timeout(-100,"登录超时"),
-	illegal_password(1100,"密码错误");
+	illegal_password(1100,"旧密码错误");
 	
 	
 	private int errorCode;

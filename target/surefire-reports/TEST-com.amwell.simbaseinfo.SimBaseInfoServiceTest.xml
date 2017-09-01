@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="2.448" tests="8" errors="0" skipped="0" failures="0">
+<testsuite name="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="4.36" tests="8" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_102\jre\bin"/>
@@ -62,12 +62,12 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase name="querybyid" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="0.029"/>
-  <testcase name="gprsstatusInfo" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="0.232"/>
-  <testcase name="deviceStatusInfo" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="1.607"/>
-  <testcase name="q" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="0.129"/>
-  <testcase name="all" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="0.065"/>
+  <testcase name="querybyid" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="0.043"/>
+  <testcase name="gprsstatusInfo" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="0.377"/>
+  <testcase name="deviceStatusInfo" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="3.446"/>
+  <testcase name="q" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="0.109"/>
+  <testcase name="all" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="0.027"/>
   <testcase name="upd" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="0.095"/>
-  <testcase name="qpage" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="0.086"/>
-  <testcase name="testAllocationSimCar" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="0.205"/>
+  <testcase name="qpage" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="0.077"/>
+  <testcase name="testAllocationSimCar" classname="com.amwell.simbaseinfo.SimBaseInfoServiceTest" time="0.186"/>
 </testsuite>

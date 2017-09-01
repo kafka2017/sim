@@ -31,4 +31,11 @@ public interface SimSendRecordMapper extends MyMapper<SimSendRecord> {
 	 */
 	public List<SimSendRecordIccidCount> queryByiccid(SimSendRecordQuery query);
 	
+	/**
+	 * 添加
+	 * @param model
+	 * @return
+	 */
+	public Integer add(SimSendRecord model);
+	
 }

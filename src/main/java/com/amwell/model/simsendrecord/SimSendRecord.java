@@ -19,8 +19,6 @@ public class SimSendRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@NotNull(message="iccid卡号不能为空")
-	@NotEmpty(message="iccid卡号不能为空")
 	@Column(name="iccid",length=50)
 	private String iccid;//
 	

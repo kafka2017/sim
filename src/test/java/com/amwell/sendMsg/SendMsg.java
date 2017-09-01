@@ -19,9 +19,9 @@ public class SendMsg extends SpringBaseTestCase {
 	@Test
 	public void sendmsg(){
 		SimSendRecord model = new SimSendRecord();
-		model.setContent("短信测试4");
-		model.setMsisdn("1064873972316");
-		model.setIccid("898602B7091701270016");
+		model.setContent("at+wpar=sr");
+		model.setMsisdn("1064879350395");
+		//model.setIccid("898602B7091701270016");
 		model.setCreateBy(1);
 		ResultJson<Integer> i = simsendrecordservice.sendMessage(model);
 		System.err.println(JSONHelper.toString(i));

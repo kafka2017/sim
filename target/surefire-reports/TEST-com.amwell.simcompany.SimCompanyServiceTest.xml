@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.amwell.simcompany.SimCompanyServiceTest" time="1.376" tests="10" errors="0" skipped="0" failures="0">
+<testsuite name="com.amwell.simcompany.SimCompanyServiceTest" time="2.203" tests="10" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Java\jdk1.8.0_102\jre\bin"/>
@@ -62,14 +62,14 @@
     <property name="sun.desktop" value="windows"/>
     <property name="sun.cpu.isalist" value="amd64"/>
   </properties>
-  <testcase name="testQuerySimCompanyStatTree" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.653"/>
-  <testcase name="qppage" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.055"/>
-  <testcase name="testQuerySimCompanyByShortName" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.021"/>
-  <testcase name="q" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.04"/>
-  <testcase name="rp" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.087"/>
-  <testcase name="add" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0"/>
-  <testcase name="del" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.336"/>
-  <testcase name="upd" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.066"/>
-  <testcase name="qbyid" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.039"/>
-  <testcase name="testQuerySimCommpanyTree" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.079"/>
+  <testcase name="testQuerySimCompanyStatTree" classname="com.amwell.simcompany.SimCompanyServiceTest" time="1.376"/>
+  <testcase name="qppage" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.067"/>
+  <testcase name="testQuerySimCompanyByShortName" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.022"/>
+  <testcase name="q" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.033"/>
+  <testcase name="rp" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.027"/>
+  <testcase name="add" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.003"/>
+  <testcase name="del" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.571"/>
+  <testcase name="upd" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.051"/>
+  <testcase name="qbyid" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.019"/>
+  <testcase name="testQuerySimCommpanyTree" classname="com.amwell.simcompany.SimCompanyServiceTest" time="0.034"/>
 </testsuite>

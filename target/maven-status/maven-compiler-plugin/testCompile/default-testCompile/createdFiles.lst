@@ -1,10 +1,13 @@
 com\amwell\report\ReportServiceTest.class
 com\amwell\ecar\service\ECarInterfaceServiceTest.class
 com\amwell\ex\Extest.class
+com\amwell\demo\LambdaDemo.class
 com\amwell\excel\ExcelTest.class
 com\amwell\role\RoleButtonTest.class
 com\amwell\SpringbootShiroApplicationTests.class
 com\amwell\simwaringset\SimWaringSetServiceTest.class
+com\amwell\demo\OptionalDemo.class
+com\amwell\demo\StaticDemo.class
 com\amwell\sendMsg\SendMsg.class
 com\amwell\user\UserServiceTest.class
 com\amwell\recv\RecvTest.class
@@ -14,3 +17,4 @@ com\amwell\test\SpringBaseTestCase.class
 com\amwell\redis\RedisServiceTest.class
 com\amwell\credit\service\LoginServiceTest.class
 com\amwell\simcompany\SimCompanyServiceTest.class
+com\amwell\demo\model\Apple.class

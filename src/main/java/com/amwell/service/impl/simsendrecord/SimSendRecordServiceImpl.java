@@ -3,6 +3,7 @@ package com.amwell.service.impl.simsendrecord;
 import java.text.NumberFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.annotation.Resource;
 
@@ -13,7 +14,10 @@ import com.amwell.common.ErrorCodeEnum;
 import com.amwell.config.AmwellSetConfig;
 import com.amwell.ecar.service.ECarInterfaceService;
 import com.amwell.ecar.vo.result.ECarSendMsgWrapperResult;
+import com.amwell.mapper.simbaseInfo.SimBaseInfoMapper;
 import com.amwell.mapper.simsendrecord.SimSendRecordMapper;
+import com.amwell.model.simbaseInfo.SimBaseInfo;
+import com.amwell.model.simbaseInfo.SimBaseInfoQuery;
 import com.amwell.model.simsendrecord.SimSendRecord;
 import com.amwell.model.simsendrecord.SimSendRecordIccidCount;
 import com.amwell.model.simsendrecord.SimSendRecordQuery;
@@ -44,6 +48,9 @@ public class SimSendRecordServiceImpl extends BaseService<SimSendRecord> impleme
 	@Autowired
 	AmwellSetConfig amwellconfig;
 	
+	@Resource
+	private SimBaseInfoMapper simBaseInfoMapper;
+	
 	@Override
 	public ResultJson<Integer> sendMessage(SimSendRecord model) {
 		
@@ -68,7 +75,16 @@ public class SimSendRecordServiceImpl extends BaseService<SimSendRecord> impleme
 			model.setSendStatus(sendStatus);
 			model.setCreateOn(DateHelper.getDateTimeStr(new Date()));
 			
-			Integer i = super.save(model);
+			SimBaseInfoQuery query = new SimBaseInfoQuery();
+			query.setMsisdn(model.getMsisdn());
+			query.setPageNum(null);
+			query.setPageSize(null);
+			List<SimBaseInfo> l = simBaseInfoMapper.querySimBaseInfo(query);
+			Optional<?> op = Optional.ofNullable(l);
+			if(op.isPresent()){
+				model.setIccid(l.get(0).getIccid());
+			}
+			Integer i = simsendrecordmapper.add(model);
 			
 			if(sendStatus==1){
 				return ResultJson.buildSuccessMsg(null, ErrorCodeEnum.op_success.getErrorCode(), ErrorCodeEnum.op_success.getErrorMsg());

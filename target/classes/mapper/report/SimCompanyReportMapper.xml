@@ -69,6 +69,29 @@
 	FIND_IN_SET(a.companyId,queryCompanyChildren(#{companyId}))
   </select>
   
+  <select id="simMessageTotal" resultType="com.amwell.model.report.SimBaseInfoSendTotal" parameterType="com.amwell.model.simcompany.SimCompanyQuery">
+  		SELECT a.id,a.msisdn,a.iccid,a.usedFlow,a.totalFlow,a.registTime,a.serviceStartDate,a.serviceEndDate,a.flowCycle,
+			 (case a.cardState
+					when '00' then '正常'
+					when '01' then '未知'
+					when '02' then '停机'
+					when '03' then '销号'
+					when '07' then '待激活'
+				else '' end) as cardState,
+			 b.fullName
+			,count(1) as sendTotal
+		from sim_base_info a
+		left join sim_company b on a.companyId = b.id
+		left join sim_send_record c on a.msisdn = c.msisdn
+		where 1=1 
+		<if test="companyId!=null">
+			and a.companyId = #{companyId}
+		</if>
+		GROUP BY a.msisdn
+		ORDER BY a.createTime desc 
+  </select>
+  
+  
   <sql id="qw">
   	<where>
   		<if test="userid!=null">

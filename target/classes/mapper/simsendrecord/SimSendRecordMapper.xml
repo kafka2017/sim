@@ -90,5 +90,9 @@
 		</if>
 		GROUP BY a.iccid
   </select>
+  
+  <insert id="add" parameterType="com.amwell.model.simsendrecord.SimSendRecord" useGeneratedKeys="true" keyProperty="id">
+  	insert into sim_send_record(iccid,msisdn,content,createBy,createOn,sendNum,sendStatus)values(#{iccid},#{msisdn},#{content},#{createBy},#{createOn},#{sendNum},#{sendStatus})
+  </insert>
 
 </mapper>

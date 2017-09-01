@@ -12,6 +12,7 @@ import com.amwell.config.AmwellSetConfig;
 import com.amwell.mapper.report.SimCompanyReportMapper;
 import com.amwell.mapper.simsendrecord.SimSendRecordMapper;
 import com.amwell.mapper.simwaringset.SimMessageMapper;
+import com.amwell.model.report.SimBaseInfoSendTotal;
 import com.amwell.model.report.SimWaring;
 import com.amwell.model.simcompany.SimCompanyQuery;
 import com.amwell.model.simcompany.SimCompanyReport;
@@ -34,6 +35,7 @@ public class ReportServiceImpl  implements ReportService {
 	
 	@Autowired
 	private AmwellSetConfig aset;
+	
 
 	@Override
 	public List<SimCompanyReport> simStatusReport(SimCompanyQuery query) {
@@ -66,6 +68,11 @@ public class ReportServiceImpl  implements ReportService {
 		}
 		
 		return ResultJson.buildSuccessMsg(src);
+	}
+
+	@Override
+	public List<SimBaseInfoSendTotal> simMessageTotal(SimCompanyQuery query) {
+		return simcompanyReportMapper.simMessageTotal(query);
 	}
 
 }

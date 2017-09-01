@@ -63,9 +63,16 @@ public class SendMsgController {
 			for(Integer i=0;i<arr.length;i++){
 				model.setMsisdn(arr[i]);
 				ResultJson<Integer> rs = simsendmsgService.sendMessage(model);
-				index++;
+				if(rs.getCode().equals(1)){
+					index++;
+				}
 			}
-			return ResultJson.buildSuccessMsg(index);
+			
+			if(index>0){
+				return ResultJson.buildSuccessMsg(index);
+			}
+			
+			return ResultJson.buildFailedMsg(0, "发送失败");
 		}
 		return ResultJson.buildFailedMsg(StatusCode.EXCEPTION, "短信群发失败");
 	}
